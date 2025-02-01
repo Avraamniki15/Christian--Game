@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Τακτοποιήστε το εδάφιο</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .verse-container { display: flex; justify-content: center; gap: 10px; }
+        .verse-word { padding: 10px; background: #ADD8E6; border-radius: 8px; cursor: grab; font-weight: bold; }
+        .correct { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>Τακτοποιήστε το εδάφιο</h1>
+    <div class="verse-container">
+        <div class="verse-word" draggable="true">Εν</div>
+        <div class="verse-word" draggable="true">αρχή</div>
+        <div class="verse-word" draggable="true">ήν</div>
+        <div class="verse-word" draggable="true">ο</div>
+        <div class="verse-word" draggable="true">Λόγος</div>
+    </div>
+    <p id="verseResult"></p>
+
+</body>
+</html>

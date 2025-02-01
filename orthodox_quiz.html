@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ερωτήσεις Ορθόδοξης Πίστης</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .game-box { background: white; padding: 20px; margin: 20px auto; border-radius: 10px; width: 60%; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
+        button { padding: 10px; margin-top: 10px; cursor: pointer; }
+        .correct { color: green; font-weight: bold; }
+        .incorrect { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>Ερωτήσεις Ορθόδοξης Πίστης</h1>
+    <div class="game-box">
+        <p id="question">Ποιος ήταν ο πρώτος μαθητής του Ιησού;</p>
+        <button onclick="checkAnswer('Πέτρος')">Πέτρος</button>
+        <button onclick="checkAnswer('Παύλος')">Παύλος</button>
+        <button onclick="checkAnswer('Ιωάννης')">Ιωάννης</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        function checkAnswer(answer) {
+            let correctAnswer = "Πέτρος";
+            let result = document.getElementById("result");
+            result.innerHTML = answer === correctAnswer ? "<span class='correct'>Σωστό!</span>" : "<span class='incorrect'>Λάθος!</span>";
+        }
+    </script>
+
+</body>
+</html>

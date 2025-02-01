@@ -15,96 +15,41 @@
             color: white;
             text-shadow: 2px 2px 4px #000;
         }
-        .game-box {
+        .game-list {
+            list-style: none;
+            padding: 0;
+        }
+        .game-list li {
             background: white;
-            padding: 20px;
-            margin: 20px auto;
-            border-radius: 15px;
-            width: 60%;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        button {
-            padding: 10px 15px;
-            margin-top: 10px;
-            cursor: pointer;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: 0.3s;
-        }
-        button:hover {
-            background: #45a049;
-        }
-        .search-container, .verse-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .search-item, .verse-word {
-            padding: 10px;
-            background: #ADD8E6;
-            border-radius: 8px;
-            cursor: grab;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        .search-item:hover, .verse-word:hover {
-            background: #87CEEB;
-        }
-        .drop-area {
-            width: 100px;
-            height: 40px;
-            border: 2px dashed #000;
-            display: inline-block;
-            line-height: 40px;
-            font-weight: bold;
-            background: #FFF8DC;
-            border-radius: 8px;
-        }
-        .image-quiz img {
-            width: 120px;
-            height: 120px;
+            padding: 15px;
+            margin: 10px auto;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: 0.3s;
         }
-        .correct {
-            color: green;
-            font-weight: bold;
+        .game-list li:hover {
+            background: #f0e68c;
         }
-        .incorrect {
-            color: red;
+        .game-list a {
+            text-decoration: none;
+            font-size: 18px;
             font-weight: bold;
+            color: black;
         }
     </style>
 </head>
 <body>
 
     <h1>Ορθόδοξα Παιχνίδια</h1>
+    <p>Επιλέξτε ένα παιχνίδι:</p>
 
-    <!-- لعبة الأسئلة الدينية -->
-    <div class="game-box">
-        <h2>Ερωτήσεις Ορθόδοξης Πίστης</h2>
-        <p id="question">Ποιος ήταν ο πρώτος μαθητής του Ιησού;</p>
-        <button onclick="checkAnswer('Πέτρος')">Πέτρος</button>
-        <button onclick="checkAnswer('Παύλος')">Παύλος</button>
-        <button onclick="checkAnswer('Ιωάννης')">Ιωάννης</button>
-        <p id="result"></p>
-    </div>
-
-    <script>
-        function checkAnswer(answer) {
-            let correctAnswer = "Πέτρος";
-            let result = document.getElementById("result");
-            if (answer === correctAnswer) {
-                result.innerHTML = "<span class='correct'>Σωστό!</span>";
-            } else {
-                result.innerHTML = "<span class='incorrect'>Λάθος! Δοκιμάστε ξανά.</span>";
-            }
-        }
-    </script>
+    <ul class="game-list">
+        <li><a href="orthodox_quiz.html">Ερωτήσεις Ορθόδοξης Πίστης</a></li>
+        <li><a href="word_search.html">Βρείτε τη λέξη</a></li>
+        <li><a href="verse_order.html">Τακτοποιήστε το εδάφιο</a></li>
+        <li><a href="saint_guess.html">Μαντέψτε τον Άγιο</a></li>
+    </ul>
 
 </body>
 </html>

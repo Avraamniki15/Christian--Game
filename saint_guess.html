@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Μαντέψτε τον Άγιο</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .game-box { background: white; padding: 20px; margin: 20px auto; border-radius: 10px; width: 60%; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
+        img { width: 120px; height: 120px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <h1>Μαντέψτε τον Άγιο</h1>
+    <div class="game-box">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Saint_George_and_the_dragon.jpg/800px-Saint_George_and_the_dragon.jpg" alt="Saint">
+        <br>
+        <button onclick="guessSaint('Άγιος Γεώργιος')">Άγιος Γεώργιος</button>
+        <button onclick="guessSaint('Άγιος Νικόλαος')">Άγιος Νικόλαος</button>
+        <button onclick="guessSaint('Άγιος Ιωάννης')">Άγιος Ιωάννης</button>
+        <p id="saintResult"></p>
+    </div>
+
+    <script>
+        function guessSaint(answer) {
+            let correctAnswer = "Άγιος Γεώργιος";
+            document.getElementById("saintResult").innerHTML = answer === correctAnswer ? "<span class='correct'>Σωστό!</span>" : "<span class='incorrect'>Λάθος! Δοκιμάστε ξανά.</span>";
+        }
+    </script>
+
+</body>
+</html>
