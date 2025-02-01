@@ -199,6 +199,16 @@
             // Shuffle the questions array at the beginning of each page load
             shuffleArray(questions);
 
+            // Ελέγχουμε αν έχουμε περάσει στην τελευταία ερώτηση
+            if (questionIndex >= questions.length) {
+                document.getElementById("question").innerText = "Τελείωσες τις ερωτήσεις! Ευχαριστούμε!";
+                document.getElementById("result").innerText = "";
+                document.getElementById("correct-answer").innerText = "";
+                document.getElementById("buttons-container").style.display = "none"; // Αφαιρούμε τα κουμπιά
+                document.getElementById("back-btn").style.display = "inline-block"; // Δείχνουμε το κουμπί επιστροφής
+                return;
+            }
+
             let question = questions[questionIndex];
             document.getElementById("question").innerText = question.question;
 
@@ -251,13 +261,7 @@
 
         function nextQuestion() {
             questionIndex++;
-            if (questionIndex < questions.length) {
-                loadQuestion();
-            } else {
-                document.getElementById("question").innerText = "Τελείωσες τις ερωτήσεις! Ευχαριστούμε!";
-                document.getElementById("result").innerText = "";
-                document.getElementById("correct-answer").innerText = ""; // Clear correct answer after finishing the quiz
-            }
+            loadQuestion();
         }
 
         // Initial load of the first question
