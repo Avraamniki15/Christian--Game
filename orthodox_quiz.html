@@ -82,11 +82,12 @@
         }
 
         /* Στυλ για το κουμπί επιστροφής */
-        .back-button {
+        #back-btn {
+            display: inline-block;
             margin-top: 20px;
             padding: 10px 20px;
             font-size: 18px;
-            background-color: #4CAF50;
+            background-color: #ff5722;
             color: white;
             border: none;
             border-radius: 5px;
@@ -94,8 +95,8 @@
             transition: background-color 0.3s;
         }
 
-        .back-button:hover {
-            background-color: #45a049;
+        #back-btn:hover {
+            background-color: #e64a19;
         }
 
         /* Αντιμετώπιση μικρών οθονών */
@@ -124,7 +125,7 @@
         <p id="correct-answer"></p>
 
         <!-- Κουμπί επιστροφής στην αρχική λίστα παιχνιδιών -->
-        <button class="back-button" onclick="window.location.href='index.html'">Επιστροφή στην αρχική λίστα παιχνιδιών</button>
+        <a href="index.html" id="back-btn">Επιστροφή στην αρχική λίστα παιχνιδιών</a>
     </div>
 
     <script>
