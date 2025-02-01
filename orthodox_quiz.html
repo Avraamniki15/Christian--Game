@@ -1,181 +1,95 @@
-<script>
-    let questionIndex = 0;
-    const questions = [
-        { 
-            question: "Ποιος ήταν ο πρώτος μαθητής του Ιησού;", 
-            correctAnswer: "Πέτρος", 
-            options: ["Πέτρος", "Παύλος", "Ιωάννης"] 
-        },
-        { 
-            question: "Ποιος είναι ο πατέρας του Ιησού;", 
-            correctAnswer: "Ο Θεός Πατέρας", 
-            options: ["Ο Θεός Πατέρας", "Ο Ιωσήφ", "Ο Σαούλ"] 
-        },
-        { 
-            question: "Ποιος είναι ο πρώτος από τους 12 Αποστόλους;", 
-            correctAnswer: "Πέτρος", 
-            options: ["Πέτρος", "Ιωάννης", "Παύλος"] 
-        },
-        { 
-            question: "Ποια είναι η σημασία της Μεγάλης Τεσσαρακοστής;", 
-            correctAnswer: "Προετοιμασία για το Πάσχα", 
-            options: ["Προετοιμασία για το Πάσχα", "Προσευχή για τον Χριστό", "Αναγνώριση των Αγίων"] 
-        },
-        { 
-            question: "Ποιό είναι το πρώτο βιβλίο της Καινής Διαθήκης;", 
-            correctAnswer: "Το Ευαγγέλιο κατά Ματθαίον", 
-            options: ["Το Ευαγγέλιο κατά Ματθαίον", "Το Ευαγγέλιο κατά Ιωάννη", "Η Πράξεις των Αποστόλων"] 
-        },
-        { 
-            question: "Ποιος είναι ο Άγιος που έγραψε την Πατερική Γραφή της Εκκλησίας;", 
-            correctAnswer: "Άγιος Ιωάννης ο Χρυσόστομος", 
-            options: ["Άγιος Ιωάννης ο Χρυσόστομος", "Άγιος Παύλος", "Άγιος Μάρκος"] 
-        },
-        { 
-            question: "Ποιός είναι ο Άγιος που θεωρείται ο προστάτης των ναυτικών;", 
-            correctAnswer: "Άγιος Νικόλαος", 
-            options: ["Άγιος Νικόλαος", "Άγιος Γεώργιος", "Άγιος Δημήτριος"] 
-        },
-        { 
-            question: "Ποιος ήταν ο πρώτος Χριστιανός μάρτυρας;", 
-            correctAnswer: "Άγιος Στέφανος", 
-            options: ["Άγιος Στέφανος", "Άγιος Παύλος", "Άγιος Ανδρέας"] 
-        },
-        { 
-            question: "Ποιός ήταν ο μεγάλος Άγιος του Αγίου Όρους;", 
-            correctAnswer: "Άγιος Παΐσιος", 
-            options: ["Άγιος Παΐσιος", "Άγιος Ιωάννης", "Άγιος Θεόδωρος"] 
-        },
-        { 
-            question: "Ποιο είναι το νόημα της λέξης 'Ευχαριστία';", 
-            correctAnswer: "Ευχαριστία σημαίνει ευχαριστία προς το Θεό", 
-            options: ["Ευχαριστία σημαίνει ευχαριστία προς το Θεό", "Ευχαριστία σημαίνει αγάπη", "Ευχαριστία σημαίνει προσευχή"] 
-        },
-        { 
-            question: "Ποιός είναι ο Άγιος προστάτης της οικογένειας;", 
-            correctAnswer: "Άγιος Ιωσήφ", 
-            options: ["Άγιος Ιωσήφ", "Άγιος Γεώργιος", "Άγιος Ανδρέας"] 
-        },
-        { 
-            question: "Ποιος ήταν ο Άγιος που ανέστησε το παιδί του Σαρουχίμ;", 
-            correctAnswer: "Άγιος Ηλίας", 
-            options: ["Άγιος Ηλίας", "Άγιος Γεώργιος", "Άγιος Παύλος"] 
-        },
-        { 
-            question: "Ποιός είναι ο πρώτος Χριστιανός μάρτυρας του Ελληνορθόδοξου Πατριαρχείου Ιεροσολύμων;", 
-            correctAnswer: "Άγιος Στέφανος", 
-            options: ["Άγιος Στέφανος", "Άγιος Παύλος", "Άγιος Ανδρέας"] 
-        },
-        { 
-            question: "Ποιο είναι το όνομα του πρώτου Αποστόλου του Χριστού που έγιναν και επισκόποι;", 
-            correctAnswer: "Άγιος Ανδρέας", 
-            options: ["Άγιος Ανδρέας", "Άγιος Ιωάννης", "Άγιος Πέτρος"] 
-        },
-        { 
-            question: "Ποιο είναι το όνομα της μητέρας του Χριστού;", 
-            correctAnswer: "Η Παναγία", 
-            options: ["Η Παναγία", "Η Μαρία", "Η Ελισάβετ"] 
-        },
-        { 
-            question: "Ποιος είναι ο Άγιος που θεωρείται ο προστάτης της Ρωσίας;", 
-            correctAnswer: "Άγιος Βλαδίμηρος", 
-            options: ["Άγιος Βλαδίμηρος", "Άγιος Πέτρος", "Άγιος Ιωάννης"] 
-        },
-        { 
-            question: "Ποιος είναι ο πρώτος επίσκοπος της Αιγύπτου;", 
-            correctAnswer: "Άγιος Μάρκος", 
-            options: ["Άγιος Μάρκος", "Άγιος Ιωάννης", "Άγιος Παύλος"] 
-        },
-        { 
-            question: "Ποιο είναι το όνομα του αγίου που εορτάζεται στις 20 Ιανουαρίου;", 
-            correctAnswer: "Άγιος Ευθύμιος", 
-            options: ["Άγιος Ευθύμιος", "Άγιος Αντώνιος", "Άγιος Στέφανος"] 
-        },
-        { 
-            question: "Ποιό είναι το όνομα του πρώτου Πατριάρχη Κωνσταντινουπόλεως;", 
-            correctAnswer: "Άγιος Αντίοχος", 
-            options: ["Άγιος Αντίοχος", "Άγιος Γεώργιος", "Άγιος Ιωάννης"] 
-        },
-        { 
-            question: "Ποιος είναι ο Άγιος προστάτης των γιατρών;", 
-            correctAnswer: "Άγιος Παντελεήμων", 
-            options: ["Άγιος Παντελεήμων", "Άγιος Δημήτριος", "Άγιος Παύλος"] 
-        },
-        { 
-            question: "Ποια είναι η ημερομηνία της εορτής της Υπαπαντής του Χριστού;", 
-            correctAnswer: "2 Φεβρουαρίου", 
-            options: ["2 Φεβρουαρίου", "15 Απριλίου", "25 Δεκεμβρίου"] 
-        }
-    ];
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ερωτήσεις Ορθόδοξης Πίστης</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .game-box { background: white; padding: 20px; margin: 20px auto; border-radius: 10px; width: 60%; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
+        button { padding: 10px; margin-top: 10px; cursor: pointer; }
+        .correct { color: green; font-weight: bold; }
+        .incorrect { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
 
-    function shuffleArray(arr) {
-        for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
-        }
-    }
+    <h1>Ερωτήσεις Ορθόδοξης Πίστης</h1>
+    <div class="game-box">
+        <p id="question">Ποιος ήταν ο πρώτος μαθητής του Ιησού;</p>
+        <button onclick="checkAnswer('Πέτρος')">Πέτρος</button>
+        <button onclick="checkAnswer('Παύλος')">Παύλος</button>
+        <button onclick="checkAnswer('Ιωάννης')">Ιωάννης</button>
+        <p id="result"></p>
+    </div>
 
-    function loadQuestion() {
-        let question = questions[questionIndex];
-        document.getElementById("question").innerText = question.question;
+    <script>
+        // قائمة الأسئلة
+        const questions = [
+            { question: "Ποιος ήταν ο πρώτος μαθητής του Ιησού;", correctAnswer: "Πέτρος", options: ["Πέτρος", "Παύλος", "Ιωάννης"] },
+            { question: "Ποιος είναι ο πατέρας του Ιησού;", correctAnswer: "Ο Θεός Πατέρας", options: ["Ο Θεός Πατέρας", "Ο Ιωσήφ", "Ο Σαούλ"] },
+            { question: "Ποιός είναι ο πρώτος από τους 12 Αποστόλους;", correctAnswer: "Πέτρος", options: ["Πέτρος", "Ιωάννης", "Παύλος"] },
+            { question: "Ποια είναι η σημασία της Μεγάλης Τεσσαρακοστής;", correctAnswer: "Προετοιμασία για το Πάσχα", options: ["Προετοιμασία για το Πάσχα", "Προσευχή για τον Χριστό", "Αναγνώριση των Αγίων"] },
+            { question: "Ποιό είναι το πρώτο βιβλίο της Καινής Διαθήκης;", correctAnswer: "Το Ευαγγέλιο κατά Ματθαίον", options: ["Το Ευαγγέλιο κατά Ματθαίον", "Το Ευαγγέλιο κατά Ιωάννη", "Η Πράξεις των Αποστόλων"] },
+            { question: "Ποιος είναι ο Άγιος που έγραψε την Πατερική Γραφή της Εκκλησίας;", correctAnswer: "Άγιος Ιωάννης ο Χρυσόστομος", options: ["Άγιος Ιωάννης ο Χρυσόστομος", "Άγιος Παύλος", "Άγιος Μάρκος"] },
+            { question: "Ποιός είναι ο Άγιος που θεωρείται ο προστάτης των ναυτικών;", correctAnswer: "Άγιος Νικόλαος", options: ["Άγιος Νικόλαος", "Άγιος Γεώργιος", "Άγιος Δημήτριος"] },
+            { question: "Ποιος ήταν ο πρώτος Χριστιανός μάρτυρας;", correctAnswer: "Άγιος Στέφανος", options: ["Άγιος Στέφανος", "Άγιος Παύλος", "Άγιος Ανδρέας"] },
+            { question: "Ποιός ήταν ο μεγάλος Άγιος του Αγίου Όρους;", correctAnswer: "Άγιος Παΐσιος", options: ["Άγιος Παΐσιος", "Άγιος Ιωάννης", "Άγιος Θεόδωρος"] },
+            { question: "Ποιο ήταν το όνομα του πρώτου ηγούμενου της Ιεράς Μονής του Αγίου Όρους;", correctAnswer: "Άγιος Σάββας ο Ηγούμενος", options: ["Άγιος Σάββας ο Ηγούμενος", "Άγιος Αθανάσιος", "Άγιος Ευστράτιος"] }
+        ];
 
-        // Shuffle the options to randomize the answers
-        shuffleArray(question.options);
-
-        // Set the buttons with randomized options
-        let buttons = document.querySelectorAll("button");
-        for (let i = 0; i < buttons.length; i++) {
-            buttons[i].innerText = question.options[i];
+        // دالة لخلط الأسئلة بشكل عشوائي
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // التبديل بين العناصر
+            }
         }
 
-        // Clear previous result and correct answer
-        document.getElementById("result").innerText = "";
-        document.getElementById("correct-answer").innerText = "";
-    }
-
-    function checkAnswer(answer, button) {
-        let result = document.getElementById("result");
-        let correctAnswerText = document.getElementById("correct-answer");
-
-        // Get the current question
-        let question = questions[questionIndex];
-
-        if (answer === question.correctAnswer) {
-            result.innerHTML = "<span class='correct'>Σωστό!</span>";
-            button.classList.add("correct"); // تغيير اللون إلى الأخضر
-        } else {
-            result.innerHTML = "<span class='incorrect'>Λάθος!</span>";
-            button.classList.add("incorrect"); // تغيير اللون إلى الأحمر
-            // عرض الإجابة الصحيحة بعد الإجابة الخاطئة
-            correctAnswerText.innerHTML = "Η σωστή απάντηση είναι: " + question.correctAnswer;
+        // دالة لبدء اللعبة
+        function startGame() {
+            shuffle(questions); // خلط الأسئلة قبل بدء اللعبة
+            showQuestion(0); // عرض أول سؤال بعد الخلط
         }
 
-        // تعطيل جميع الأزرار بعد الإجابة
-        disableButtons();
+        let currentQuestionIndex = 0; // بداية السؤال الأول
 
-        // الانتقال للسؤال التالي بعد 2 ثانية
-        setTimeout(nextQuestion, 2000);
-    }
+        function showQuestion(index) {
+            const question = questions[index];
+            document.getElementById("question").textContent = question.question;
 
-    function disableButtons() {
-        let buttons = document.querySelectorAll("button");
-        buttons.forEach(button => {
-            button.disabled = true;
-        });
-    }
+            // تحديث الأزرار مع الخيارات العشوائية
+            const buttons = document.querySelectorAll("button");
+            buttons[0].textContent = question.options[0];
+            buttons[1].textContent = question.options[1];
+            buttons[2].textContent = question.options[2];
 
-    function nextQuestion() {
-        questionIndex++;
-        if (questionIndex < questions.length) {
-            loadQuestion();
-        } else {
-            document.getElementById("question").innerText = "Τελείωσες τις ερωτήσεις! Ευχαριστούμε!";
-            document.getElementById("result").innerText = "";
-            document.getElementById("correct-answer").innerText = ""; // التأكد من إزالة الإجابة الصحيحة بعد انتهاء الأسئلة
+            // إعادة تعيين نتيجة الإجابة
+            document.getElementById("result").textContent = "";
         }
-    }
 
-    // Initial load of the first question
-    loadQuestion();
+        function checkAnswer(answer) {
+            const question = questions[currentQuestionIndex];
+            const result = document.getElementById("result");
 
-</script>
+            // تغيير اللون للجواب الصحيح أو الخاطئ
+            if (answer === question.correctAnswer) {
+                result.innerHTML = "<span class='correct'>Σωστό!</span>";
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.length) {
+                    setTimeout(() => showQuestion(currentQuestionIndex), 1000); // الانتقال للسؤال التالي بعد 1 ثانية
+                } else {
+                    result.innerHTML += "<br><span class='correct'>Η φάση ολοκληρώθηκε! Ευχαριστούμε για το παιχνίδι!</span>";
+                }
+            } else {
+                result.innerHTML = "<span class='incorrect'>Λάθος!</span><br>Η σωστή απάντηση είναι: " + question.correctAnswer;
+                setTimeout(() => showQuestion(currentQuestionIndex), 2000); // الانتقال للسؤال التالي بعد 2 ثانية
+            }
+        }
+
+        // بدء اللعبة عند تحميل الصفحة
+        window.onload = startGame;
+    </script>
+
+</body>
+</html>
