@@ -18,7 +18,6 @@
       background-color: #f4f7f6;
       width: 100%;
     }
-
     #quiz-container {
       background: white;
       padding: 10px;
@@ -29,12 +28,11 @@
       text-align: center;
       margin: 10px;
     }
-
-    /* Στυλ για τα κουμπιά επιλογής απάντησης */
+    /* Κουμπιά επιλογής */
     #buttons-container button {
       display: block;
       width: 100%;
-      margin: 10px 0; /* Αύξηση του κενού μεταξύ κουμπιών */
+      margin: 10px 0; /* Αυξημένο κενό μεταξύ κουμπιών */
       padding: 10px;
       font-size: 14px;
       cursor: pointer;
@@ -44,73 +42,74 @@
       color: white;
       transition: background-color 0.3s;
     }
-
     #buttons-container button:hover {
       background-color: #45a049;
     }
-
     #buttons-container button:disabled {
       background-color: #ccc;
       cursor: not-allowed;
     }
-
     #result {
       font-size: 14px;
       font-weight: bold;
       margin-top: 5px;
     }
-
     .correct {
       color: green;
     }
-
     .incorrect {
       color: red;
     }
-
     #score {
       margin-top: 5px;
       font-size: 16px;
       font-weight: bold;
     }
-
     #restart-btn {
       margin-top: 15px;
       display: none;
       background-color: #ff5722;
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
     }
-
     #restart-btn:hover {
       background-color: #e64a19;
     }
-
     #back-btn {
       margin-top: 15px;
       background-color: #007bff;
       width: 100%;
+      max-width: 250px;
       padding: 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
     }
-
     #back-btn:hover {
       background-color: #0056b3;
     }
-
     @media (max-width: 480px) {
       body {
         padding: 5px;
       }
-
       #quiz-container {
         width: 80%;
         max-width: 100%;
         padding: 15px;
       }
-
-      #buttons-container button, #restart-btn {
+      #buttons-container button, #restart-btn, #back-btn {
         font-size: 12px;
         padding: 8px;
       }
-
       #score {
         font-size: 14px;
       }
@@ -129,31 +128,11 @@
 
   <script>
     const questions = [
-      { 
-        question: "Ποιος ήταν ο πρώτος μαθητής του Ιησού;", 
-        correctAnswer: "Πέτρος", 
-        options: ["Πέτρος", "Παύλος", "Ιωάννης"] 
-      },
-      { 
-        question: "Ποιος είναι ο πατέρας του Ιησού;", 
-        correctAnswer: "Ο Θεός Πατέρας", 
-        options: ["Ο Θεός Πατέρας", "Ο Ιωσήφ", "Ο Σαούλ"] 
-      },
-      { 
-        question: "Ποιός είναι ο πρώτος από τους 12 Αποστόλους;", 
-        correctAnswer: "Πέτρος", 
-        options: ["Πέτρος", "Ιωάννης", "Παύλος"] 
-      },
-      { 
-        question: "Ποια είναι η σημασία της Μεγάλης Τεσσαρακοστής;", 
-        correctAnswer: "Προετοιμασία για το Πάσχα", 
-        options: ["Προετοιμασία για το Πάσχα", "Προσευχή για τον Χριστό", "Αναγνώριση των Αγίων"] 
-      },
-      { 
-        question: "Ποιό είναι το πρώτο βιβλίο της Καινής Διαθήκης;", 
-        correctAnswer: "Το Ευαγγέλιο κατά Ματθαίον", 
-        options: ["Το Ευαγγέλιο κατά Ματθαίον", "Το Ευαγγέλιο κατά Ιωάννη", "Η Πράξεις των Αποστόλων"] 
-      }
+      { question: "Ποιος ήταν ο πρώτος μαθητής του Ιησού;", correctAnswer: "Πέτρος", options: ["Πέτρος", "Παύλος", "Ιωάννης"] },
+      { question: "Ποιος είναι ο πατέρας του Ιησού;", correctAnswer: "Ο Θεός Πατέρας", options: ["Ο Θεός Πατέρας", "Ο Ιωσήφ", "Ο Σαούλ"] },
+      { question: "Ποιός είναι ο πρώτος από τους 12 Αποστόλους;", correctAnswer: "Πέτρος", options: ["Πέτρος", "Ιωάννης", "Παύλος"] },
+      { question: "Ποια είναι η σημασία της Μεγάλης Τεσσαρακοστής;", correctAnswer: "Προετοιμασία για το Πάσχα", options: ["Προετοιμασία για το Πάσχα", "Προσευχή για τον Χριστό", "Αναγνώριση των Αγίων"] },
+      { question: "Ποιό είναι το πρώτο βιβλίο της Καινής Διαθήκης;", correctAnswer: "Το Ευαγγέλιο κατά Ματθαίον", options: ["Το Ευαγγέλιο κατά Ματθαίον", "Το Ευαγγέλιο κατά Ιωάννη", "Η Πράξεις των Αποστόλων"] }
     ];
 
     let remainingQuestions = [...questions];
@@ -173,12 +152,15 @@
         document.getElementById("restart-btn").style.display = "block";
         return;
       }
+
       const randomIndex = Math.floor(Math.random() * remainingQuestions.length);
       const currentQuestion = remainingQuestions[randomIndex];
       remainingQuestions.splice(randomIndex, 1);
+
       document.getElementById("question").innerText = currentQuestion.question;
       let shuffledOptions = [...currentQuestion.options];
       shuffleArray(shuffledOptions);
+
       let buttonsContainer = document.getElementById("buttons-container");
       buttonsContainer.innerHTML = "";
       shuffledOptions.forEach(option => {
@@ -201,8 +183,10 @@
         score--;
       }
       document.getElementById("score").innerText = `Σκορ: ${score}`;
+
       let buttons = document.querySelectorAll("#buttons-container button");
       buttons.forEach(btn => btn.disabled = true);
+
       setTimeout(loadQuestion, 2000);
     }
 
