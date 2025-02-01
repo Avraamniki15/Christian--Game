@@ -1,213 +1,224 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Κουίζ Χριστιανικής Θρησκείας</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f7f6;
-            flex-direction: column;
-            width: 100%;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Κουίζ Χριστιανικής Θρησκείας</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f4f7f6;
+      width: 100%;
+    }
 
-        #quiz-container {
-            background: white;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-            width: 55%;  /* Μειώσαμε το πλάτος από 70% σε 60% */
-            max-width: 240px;  /* Μειώσαμε το μέγιστο πλάτος από 280px σε 250px */
-            text-align: center;
-            margin: 10px;
-        }
+    #quiz-container {
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      width: 60%;
+      max-width: 250px;
+      text-align: center;
+      margin: 10px;
+    }
 
-        button {
-            display: block;
-            width: 100%;
-            margin: 5px 0;
-            padding: 10px;
-            font-size: 18px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #4CAF50;
-            color: white;
-            transition: background-color 0.3s;
-        }
+    /* Στυλ για τα κουμπιά επιλογής απάντησης */
+    #buttons-container button {
+      display: block;
+      width: 100%;
+      margin: 10px 0; /* Αύξηση του κενού μεταξύ κουμπιών */
+      padding: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #4CAF50;
+      color: white;
+      transition: background-color 0.3s;
+    }
 
-        button:hover {
-            background-color: #45a049;
-        }
+    #buttons-container button:hover {
+      background-color: #45a049;
+    }
 
-        button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
+    #buttons-container button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
 
-        #result {
-            font-size: 14px;
-            font-weight: bold;
-            margin-top: 5px;
-        }
+    #result {
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
 
-        .correct {
-            color: green;
-        }
+    .correct {
+      color: green;
+    }
 
-        .incorrect {
-            color: red;
-        }
+    .incorrect {
+      color: red;
+    }
 
-        #score {
-            margin-top: 5px;
-            font-size: 16px;
-            font-weight: bold;
-        }
+    #score {
+      margin-top: 5px;
+      font-size: 16px;
+      font-weight: bold;
+    }
 
-        #restart-btn {
-            margin-top: 15px;
-            display: none;
-            background-color: #ff5722;
-        }
+    #restart-btn {
+      margin-top: 15px;
+      display: none;
+      background-color: #ff5722;
+    }
 
-        #restart-btn:hover {
-            background-color: #e64a19;
-        }
+    #restart-btn:hover {
+      background-color: #e64a19;
+    }
 
-        #back-btn {
-            margin-top: 16px;
-            background-color: #007bff;
-            width: 50%;  /* Έχει το ίδιο πλάτος με το κουίζ container */
-            padding: 10px;
-        }
+    #back-btn {
+      margin-top: 15px;
+      background-color: #007bff;
+      width: 100%;
+      padding: 10px;
+    }
 
-        #back-btn:hover {
-            background-color: #0056b3;
-        }
+    #back-btn:hover {
+      background-color: #0056b3;
+    }
 
-        @media (max-width: 450px) {
-            body {
-                padding: 5px;
-            }
+    @media (max-width: 480px) {
+      body {
+        padding: 5px;
+      }
 
-            #quiz-container {
-                width: 60%;  /* Μειώσαμε το πλάτος σε 80% για μικρότερες οθόνες */
-                max-width: 100%;
-                padding: 15px;
-            }
+      #quiz-container {
+        width: 80%;
+        max-width: 100%;
+        padding: 15px;
+      }
 
-            button {
-                font-size: 16px;
-                padding: 8px;
-            }
+      #buttons-container button, #restart-btn {
+        font-size: 12px;
+        padding: 8px;
+      }
 
-            #score {
-                font-size: 14px;
-            }
-        }
-    </style>
+      #score {
+        font-size: 14px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div id="quiz-container">
-        <h2 id="question">Φόρτωση ερώτησης...</h2>
-        <div id="buttons-container"></div>
-        <p id="result"></p>
-        <p id="score">Σκορ: 0</p>
-        <button id="restart-btn" onclick="restartQuiz()">Ξαναπαίξε</button>
-    </div>
-    <button id="back-btn" onclick="goBack()">Επιστροφή στην Αρχική</button>
+  <div id="quiz-container">
+    <h2 id="question">Φόρτωση ερώτησης...</h2>
+    <div id="buttons-container"></div>
+    <p id="result"></p>
+    <p id="score">Σκορ: 0</p>
+    <button id="restart-btn" onclick="restartQuiz()">Ξαναπαίξε</button>
+  </div>
+  <button id="back-btn" onclick="goBack()">Επιστροφή στην Αρχική</button>
 
-    <script>
-        const questions = [
-            { question: "Ποιος ήταν ο πρώτος μαθητής του Ιησού;", correctAnswer: "Πέτρος", options: ["Πέτρος", "Παύλος", "Ιωάννης"] },
-            { question: "Ποιος είναι ο πατέρας του Ιησού;", correctAnswer: "Ο Θεός Πατέρας", options: ["Ο Θεός Πατέρας", "Ο Ιωσήφ", "Ο Σαούλ"] },
-            { question: "Ποιός είναι ο πρώτος από τους 12 Αποστόλους;", correctAnswer: "Πέτρος", options: ["Πέτρος", "Ιωάννης", "Παύλος"] },
-            { question: "Ποια είναι η σημασία της Μεγάλης Τεσσαρακοστής;", correctAnswer: "Προετοιμασία για το Πάσχα", options: ["Προετοιμασία για το Πάσχα", "Προσευχή για τον Χριστό", "Αναγνώριση των Αγίων"] },
-            { question: "Ποιό είναι το πρώτο βιβλίο της Καινής Διαθήκης;", correctAnswer: "Το Ευαγγέλιο κατά Ματθαίον", options: ["Το Ευαγγέλιο κατά Ματθαίον", "Το Ευαγγέλιο κατά Ιωάννη", "Η Πράξεις των Αποστόλων"] }
-        ];
+  <script>
+    const questions = [
+      { 
+        question: "Ποιος ήταν ο πρώτος μαθητής του Ιησού;", 
+        correctAnswer: "Πέτρος", 
+        options: ["Πέτρος", "Παύλος", "Ιωάννης"] 
+      },
+      { 
+        question: "Ποιος είναι ο πατέρας του Ιησού;", 
+        correctAnswer: "Ο Θεός Πατέρας", 
+        options: ["Ο Θεός Πατέρας", "Ο Ιωσήφ", "Ο Σαούλ"] 
+      },
+      { 
+        question: "Ποιός είναι ο πρώτος από τους 12 Αποστόλους;", 
+        correctAnswer: "Πέτρος", 
+        options: ["Πέτρος", "Ιωάννης", "Παύλος"] 
+      },
+      { 
+        question: "Ποια είναι η σημασία της Μεγάλης Τεσσαρακοστής;", 
+        correctAnswer: "Προετοιμασία για το Πάσχα", 
+        options: ["Προετοιμασία για το Πάσχα", "Προσευχή για τον Χριστό", "Αναγνώριση των Αγίων"] 
+      },
+      { 
+        question: "Ποιό είναι το πρώτο βιβλίο της Καινής Διαθήκης;", 
+        correctAnswer: "Το Ευαγγέλιο κατά Ματθαίον", 
+        options: ["Το Ευαγγέλιο κατά Ματθαίον", "Το Ευαγγέλιο κατά Ιωάννη", "Η Πράξεις των Αποστόλων"] 
+      }
+    ];
 
-        let remainingQuestions = [...questions];
-        let score = 0;
+    let remainingQuestions = [...questions];
+    let score = 0;
 
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
 
-        function loadQuestion() {
-            if (remainingQuestions.length === 0) {
-                document.getElementById("question").innerText = `Τέλος του κουίζ! Το τελικό σου σκορ είναι: ${score}`;
-                document.getElementById("buttons-container").innerHTML = "";
-                document.getElementById("restart-btn").style.display = "block";
-                return;
-            }
+    function loadQuestion() {
+      if (remainingQuestions.length === 0) {
+        document.getElementById("question").innerText = `Τέλος του κουίζ! Το τελικό σου σκορ είναι: ${score}`;
+        document.getElementById("buttons-container").innerHTML = "";
+        document.getElementById("restart-btn").style.display = "block";
+        return;
+      }
+      const randomIndex = Math.floor(Math.random() * remainingQuestions.length);
+      const currentQuestion = remainingQuestions[randomIndex];
+      remainingQuestions.splice(randomIndex, 1);
+      document.getElementById("question").innerText = currentQuestion.question;
+      let shuffledOptions = [...currentQuestion.options];
+      shuffleArray(shuffledOptions);
+      let buttonsContainer = document.getElementById("buttons-container");
+      buttonsContainer.innerHTML = "";
+      shuffledOptions.forEach(option => {
+        let btn = document.createElement("button");
+        btn.innerText = option;
+        btn.onclick = function () { checkAnswer(option, currentQuestion.correctAnswer, btn); };
+        buttonsContainer.appendChild(btn);
+      });
+      document.getElementById("result").innerText = "";
+    }
 
-            const randomIndex = Math.floor(Math.random() * remainingQuestions.length);
-            const currentQuestion = remainingQuestions[randomIndex];
+    function checkAnswer(selected, correct, button) {
+      if (selected === correct) {
+        document.getElementById("result").innerHTML = "<span class='correct'>Σωστό!</span>";
+        button.style.backgroundColor = "green";
+        score++;
+      } else {
+        document.getElementById("result").innerHTML = "<span class='incorrect'>Λάθος! Η σωστή απάντηση είναι: " + correct + ".</span>";
+        button.style.backgroundColor = "red";
+        score--;
+      }
+      document.getElementById("score").innerText = `Σκορ: ${score}`;
+      let buttons = document.querySelectorAll("#buttons-container button");
+      buttons.forEach(btn => btn.disabled = true);
+      setTimeout(loadQuestion, 2000);
+    }
 
-            remainingQuestions.splice(randomIndex, 1);
+    function restartQuiz() {
+      remainingQuestions = [...questions];
+      score = 0;
+      document.getElementById("score").innerText = "Σκορ: 0";
+      document.getElementById("restart-btn").style.display = "none";
+      loadQuestion();
+    }
 
-            document.getElementById("question").innerText = currentQuestion.question;
+    function goBack() {
+      window.location.href = "index.html";
+    }
 
-            let shuffledOptions = [...currentQuestion.options];
-            shuffleArray(shuffledOptions);
-
-            let buttonsContainer = document.getElementById("buttons-container");
-            buttonsContainer.innerHTML = "";
-
-            shuffledOptions.forEach(option => {
-                let btn = document.createElement("button");
-                btn.innerText = option;
-                btn.onclick = function () { checkAnswer(option, currentQuestion.correctAnswer, btn); };
-                buttonsContainer.appendChild(btn);
-            });
-
-            document.getElementById("result").innerText = "";
-        }
-
-        function checkAnswer(selected, correct, button) {
-            if (selected === correct) {
-                document.getElementById("result").innerHTML = "<span class='correct'>Σωστό!</span>";
-                button.style.backgroundColor = "green";
-                score++;
-            } else {
-                document.getElementById("result").innerHTML = "<span class='incorrect'>Λάθος! Η σωστή απάντηση είναι: " + correct + ".</span>";
-                button.style.backgroundColor = "red";
-                score--;
-            }
-
-            document.getElementById("score").innerText = `Σκορ: ${score}`;
-
-            let buttons = document.querySelectorAll("#buttons-container button");
-            buttons.forEach(btn => btn.disabled = true);
-
-            setTimeout(loadQuestion, 2000);
-        }
-
-        function restartQuiz() {
-            remainingQuestions = [...questions];
-            score = 0;
-            document.getElementById("score").innerText = "Σκορ: 0";
-            document.getElementById("restart-btn").style.display = "none";
-            loadQuestion();
-        }
-
-        function goBack() {
-            window.location.href = "index.html"; // Αρχική σελίδα
-        }
-
-        loadQuestion();
-    </script>
+    loadQuestion();
+  </script>
 </body>
 </html>
