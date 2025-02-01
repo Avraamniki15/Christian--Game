@@ -196,10 +196,7 @@
         }
 
         function loadQuestion() {
-            // Shuffle the questions array at the beginning of each page load
-            shuffleArray(questions);
-
-            // Ελέγχουμε αν έχουμε περάσει στην τελευταία ερώτηση
+            // Αν δεν υπάρχουν άλλες ερωτήσεις, τερματίζουμε το κουίζ
             if (questionIndex >= questions.length) {
                 document.getElementById("question").innerText = "Τελείωσες τις ερωτήσεις! Ευχαριστούμε!";
                 document.getElementById("result").innerText = "";
@@ -212,18 +209,18 @@
             let question = questions[questionIndex];
             document.getElementById("question").innerText = question.question;
 
-            // Shuffle the options to randomize the answers
+            // Ανακατεύουμε τις απαντήσεις για κάθε ερώτηση
             shuffleArray(question.options);
 
-            // Set the buttons with randomized options
+            // Ρυθμίζουμε τις επιλογές στα κουμπιά
             let buttons = document.querySelectorAll("button");
             for (let i = 0; i < buttons.length; i++) {
                 buttons[i].innerText = question.options[i];
-                buttons[i].disabled = false; // Ενεργοποιούμε τα κουμπιά
-                buttons[i].classList.remove("correct", "incorrect"); // Αφαιρούμε τυχόν προηγούμενα στυλ
+                buttons[i].disabled = false;
+                buttons[i].classList.remove("correct", "incorrect"); // Καθαρίζουμε προηγούμενα στυλ
             }
 
-            // Clear previous result and correct answer
+            // Καθαρίζουμε τα αποτελέσματα από προηγούμενη απάντηση
             document.getElementById("result").innerText = "";
             document.getElementById("correct-answer").innerText = "";
         }
@@ -232,23 +229,23 @@
             let result = document.getElementById("result");
             let correctAnswerText = document.getElementById("correct-answer");
 
-            // Get the current question
+            // Λαμβάνουμε την τρέχουσα ερώτηση
             let question = questions[questionIndex];
 
             if (answer === question.correctAnswer) {
                 result.innerHTML = "<span class='correct'>Σωστό!</span>";
-                button.classList.add("correct"); // Set green color
+                button.classList.add("correct"); // Σημειώνουμε την σωστή απάντηση
             } else {
                 result.innerHTML = "<span class='incorrect'>Λάθος!</span>";
-                button.classList.add("incorrect"); // Set red color
-                // Show correct answer after wrong answer
+                button.classList.add("incorrect"); // Σημειώνουμε τη λάθος απάντηση
+                // Εμφανίζουμε τη σωστή απάντηση μετά από λάθος
                 correctAnswerText.innerHTML = "Η σωστή απάντηση είναι: " + question.correctAnswer;
             }
 
-            // Disable all buttons after answering
+            // Απενεργοποιούμε όλα τα κουμπιά
             disableButtons();
 
-            // Move to the next question after 2 seconds
+            // Μεταβαίνουμε στην επόμενη ερώτηση μετά από 2 δευτερόλεπτα
             setTimeout(nextQuestion, 2000);
         }
 
@@ -264,7 +261,8 @@
             loadQuestion();
         }
 
-        // Initial load of the first question
+        // Επιλέγουμε τυχαία την πρώτη ερώτηση
+        shuffleArray(questions);
         loadQuestion();
     </script>
 </body>
