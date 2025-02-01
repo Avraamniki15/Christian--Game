@@ -20,7 +20,9 @@
     <p>Βρείτε την λέξη:</p>
     <div class="search-container" id="searchGrid"></div>
     <p id="wordResult"></p>
-    <p class="timer" id="timer">Χρόνος: 30</p>
+    <p class="timer" id="timer">Χρόνος: 50</p>
+    <br>
+    <p id="score">Σκορ: 0</p> <!-- Εμφάνιση σκορ -->
     <br>
     <button onclick="window.location.href = 'index.html';">Επιστροφή στη λίστα παιχνιδιών</button>
 
@@ -30,8 +32,9 @@
         const alphabet = 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ'; // Ελληνικό αλφάβητο
         let grid = [];
         let currentWord = '';
-        let timeLeft = 30;
+        let timeLeft = 50; // Χρόνος 50 δευτερόλεπτα για κάθε γύρο
         let timerInterval;
+        let score = 0; // Αρχικό σκορ
 
         // Επιλογή τυχαίας λέξης
         function getRandomWord() {
@@ -130,7 +133,10 @@
             if (word !== '') {
                 cell.classList.add('found');
                 if (checkAllFound()) {
+                    score++; // Αύξηση σκορ
+                    document.getElementById("score").innerText = `Σκορ: ${score}`; // Ενημέρωση σκορ
                     document.getElementById("wordResult").innerHTML = "<span class='correct'>Συγχαρητήρια! Βρήκατε την λέξη!</span>";
+                    setTimeout(nextRound, 2000); // Πέρασμα στον επόμενο γύρο μετά από 2 δευτερόλεπτα
                 }
             }
         }
@@ -142,6 +148,15 @@
             return foundCells.length === totalCells;
         }
 
+        // Επόμενος γύρος
+        function nextRound() {
+            // Επαναφορά του παιχνιδιού με νέα λέξη και νέο χρονομέτρημα
+            timeLeft = 50; // Επαναφορά του χρόνου
+            document.getElementById("timer").innerText = `Χρόνος: ${timeLeft}`;
+            createGrid();
+            startTimer();
+        }
+
         // Έναρξη χρονομέτρησης
         function startTimer() {
             timerInterval = setInterval(() => {
@@ -149,7 +164,8 @@
                 document.getElementById("timer").innerText = `Χρόνος: ${timeLeft}`;
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
-                    document.getElementById("wordResult").innerHTML = "<span class='incorrect'>Ο χρόνος εξαντλήθηκε! Παίξτε ξανά.</span>";
+                    document.getElementById("wordResult").innerHTML = `<span class='incorrect'>Ο χρόνος εξαντλήθηκε! Βρήκατε ${score} λέξεις.</span>`;
+                    setTimeout(nextRound, 2000); // Μετάβαση στον επόμενο γύρο μετά από 2 δευτερόλεπτα
                 }
             }, 1000);
         }
