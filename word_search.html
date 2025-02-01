@@ -35,6 +35,7 @@
     let timeLeft = 50;
     let timerInterval;
     let selectedLetters = [];
+    let wordPositions = [];
     
     // Ενεργοποιεί τον χρονόμετρο και τον μετράει
     function startTimer() {
@@ -55,6 +56,8 @@
         gridContainer.innerHTML = '';
         
         currentWordArray = currentWord.split('');
+        wordPositions = [];
+        
         let allLetters = generateGridLetters(currentWordArray);
         
         // Γεμίζει τα κελιά με τα γράμματα
@@ -71,6 +74,9 @@
                 gridContainer.appendChild(cell);
             }
         }
+
+        // Τοποθετούμε τη λέξη σε τυχαία θέση και κατεύθυνση
+        placeWordInGrid(currentWord);
     }
 
     // Δημιουργεί τα γράμματα του πίνακα
@@ -86,6 +92,66 @@
         }
 
         return allLetters.sort(() => Math.random() - 0.5); // Ανακατεύει τα γράμματα
+    }
+
+    // Τοποθετούμε τη λέξη στο grid
+    function placeWordInGrid(word) {
+        let placed = false;
+        
+        while (!placed) {
+            // Επιλέγουμε τυχαία κατεύθυνση
+            let direction = Math.floor(Math.random() * 3); // 0: οριζόντια, 1: κάθετα, 2: διαγώνια
+            let row = Math.floor(Math.random() * gridSize);
+            let col = Math.floor(Math.random() * gridSize);
+            
+            // Ελέγχουμε αν η λέξη μπορεί να τοποθετηθεί
+            if (canPlaceWord(word, row, col, direction)) {
+                placed = true;
+                // Τοποθετούμε τα γράμματα
+                for (let i = 0; i < word.length; i++) {
+                    let letter = word[i];
+                    let cell;
+                    
+                    if (direction === 0) {
+                        cell = document.querySelector(`[data-row="${row}"][data-col="${col + i}"]`);
+                    } else if (direction === 1) {
+                        cell = document.querySelector(`[data-row="${row + i}"][data-col="${col}"]`);
+                    } else {
+                        cell = document.querySelector(`[data-row="${row + i}"][data-col="${col + i}"]`);
+                    }
+                    
+                    cell.textContent = letter;
+                    wordPositions.push({ letter: letter, row: parseInt(cell.getAttribute('data-row')), col: parseInt(cell.getAttribute('data-col')) });
+                }
+            }
+        }
+    }
+
+    // Ελέγχουμε αν η λέξη μπορεί να τοποθετηθεί στη θέση (row, col) με την κατεύθυνση
+    function canPlaceWord(word, row, col, direction) {
+        if (direction === 0) { // Οριζόντια
+            if (col + word.length > gridSize) return false;
+            for (let i = 0; i < word.length; i++) {
+                if (document.querySelector(`[data-row="${row}"][data-col="${col + i}"]`).textContent !== '') {
+                    return false;
+                }
+            }
+        } else if (direction === 1) { // Κάθετα
+            if (row + word.length > gridSize) return false;
+            for (let i = 0; i < word.length; i++) {
+                if (document.querySelector(`[data-row="${row + i}"][data-col="${col}"]`).textContent !== '') {
+                    return false;
+                }
+            }
+        } else { // Διαγώνια
+            if (row + word.length > gridSize || col + word.length > gridSize) return false;
+            for (let i = 0; i < word.length; i++) {
+                if (document.querySelector(`[data-row="${row + i}"][data-col="${col + i}"]`).textContent !== '') {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     // Επιλογή γράμματος από τον χρήστη
