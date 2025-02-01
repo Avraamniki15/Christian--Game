@@ -188,6 +188,8 @@
             let buttons = document.querySelectorAll("button");
             for (let i = 0; i < buttons.length; i++) {
                 buttons[i].innerText = question.options[i];
+                buttons[i].disabled = false; // Ενεργοποιούμε τα κουμπιά
+                buttons[i].classList.remove("correct", "incorrect"); // Αφαιρούμε τυχόν προηγούμενα στυλ
             }
 
             // Clear previous result and correct answer
