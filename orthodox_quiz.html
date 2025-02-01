@@ -5,33 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Κουίζ Χριστιανικής Θρησκείας</title>
     <style>
+        /* Γενικά στυλ για το σώμα */
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f7f6;
             flex-direction: column;
-            width: 100%;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
         }
 
+        /* Στυλ για το quiz container */
         #quiz-container {
             background: white;
             padding: 10px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 80%;
+            width: 85%;
             max-width: 300px;
             text-align: center;
         }
 
+        h2 {
+            font-size: 18px;
+            color: #444;
+        }
+
         button {
             display: block;
-            width: 80%;
+            width: 100%;
             margin: 8px 0;
             padding: 10px;
             font-size: 16px;
@@ -40,6 +47,7 @@
             border-radius: 5px;
             background-color: #4CAF50;
             color: white;
+            transition: background-color 0.3s;
         }
 
         button:hover {
@@ -47,14 +55,19 @@
         }
 
         button:disabled {
-            background-color: #ccc;
+            background-color: #cccccc;
             cursor: not-allowed;
         }
 
-        #result {
+        #score {
             font-size: 18px;
-            font-weight: bold;
             margin-top: 10px;
+        }
+
+        #result {
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
         }
 
         .correct {
@@ -65,139 +78,141 @@
             color: red;
         }
 
-        #score {
+        #restart-btn, #back-btn {
+            font-size: 14px;
+            padding: 8px;
+            width: 80%;
+            max-width: 250px;
             margin-top: 10px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        #restart-btn {
-            margin-top: 20px;
-            display: none;
-            background-color: #ff5722;
-        }
-
-        #restart-btn:hover {
-            background-color: #e64a19;
-        }
-
-        #back-btn {
-            margin-top: 20px;
             background-color: #007bff;
+            color: white;
         }
 
-        #back-btn:hover {
+        #restart-btn:hover, #back-btn:hover {
             background-color: #0056b3;
         }
 
         @media (max-width: 480px) {
-            body {
-                height: auto;
-                padding: 20px;
-            }
-
             #quiz-container {
-                width: 100%;
-                max-width: 100%;
-                padding: 20px;
+                width: 90%;
+                max-width: 280px;
+                padding: 15px;
             }
 
             button {
-                font-size: 16px;
-                padding: 14px;
+                font-size: 14px;
+                padding: 12px;
+            }
+
+            #restart-btn, #back-btn {
+                font-size: 12px;
+                padding: 6px;
+                max-width: 220px;
             }
         }
     </style>
 </head>
 <body>
     <div id="quiz-container">
-        <h2 id="question">Φόρτωση ερώτησης...</h2>
-        <div id="buttons-container"></div>
+        <h2 id="question">Ερώτηση</h2>
+        <div id="buttons-container">
+            <button onclick="checkAnswer(this.innerText, this)">Επιλογή 1</button>
+            <button onclick="checkAnswer(this.innerText, this)">Επιλογή 2</button>
+            <button onclick="checkAnswer(this.innerText, this)">Επιλογή 3</button>
+        </div>
         <p id="result"></p>
+        <p id="correct-answer"></p>
         <p id="score">Σκορ: 0</p>
         <button id="restart-btn" onclick="restartQuiz()">Ξαναπαίξε</button>
+        <button id="back-btn" onclick="goBack()">Επιστροφή</button>
     </div>
-    <button id="back-btn" onclick="goBack()">Επιστροφή στην Αρχική</button>
 
     <script>
+        let questionIndex = 0;
+        let score = 0;
+
         const questions = [
             { question: "Ποιος ήταν ο πρώτος μαθητής του Ιησού;", correctAnswer: "Πέτρος", options: ["Πέτρος", "Παύλος", "Ιωάννης"] },
             { question: "Ποιος είναι ο πατέρας του Ιησού;", correctAnswer: "Ο Θεός Πατέρας", options: ["Ο Θεός Πατέρας", "Ο Ιωσήφ", "Ο Σαούλ"] },
-            { question: "Ποιός είναι ο πρώτος από τους 12 Αποστόλους;", correctAnswer: "Πέτρος", options: ["Πέτρος", "Ιωάννης", "Παύλος"] },
-            { question: "Ποια είναι η σημασία της Μεγάλης Τεσσαρακοστής;", correctAnswer: "Προετοιμασία για το Πάσχα", options: ["Προετοιμασία για το Πάσχα", "Προσευχή για τον Χριστό", "Αναγνώριση των Αγίων"] },
-            { question: "Ποιό είναι το πρώτο βιβλίο της Καινής Διαθήκης;", correctAnswer: "Το Ευαγγέλιο κατά Ματθαίον", options: ["Το Ευαγγέλιο κατά Ματθαίον", "Το Ευαγγέλιο κατά Ιωάννη", "Η Πράξεις των Αποστόλων"] }
+            { question: "Ποιός είναι ο Άγιος προστάτης των ναυτικών;", correctAnswer: "Άγιος Νικόλαος", options: ["Άγιος Νικόλαος", "Άγιος Γεώργιος", "Άγιος Δημήτριος"] },
+            { question: "Ποιο είναι το πρώτο βιβλίο της Καινής Διαθήκης;", correctAnswer: "Το Ευαγγέλιο κατά Ματθαίον", options: ["Το Ευαγγέλιο κατά Ματθαίον", "Το Ευαγγέλιο κατά Ιωάννη", "Η Πράξεις των Αποστόλων"] }
         ];
 
-        let remainingQuestions = [...questions];
-        let score = 0;
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+                [arr[i], arr[j]] = [arr[j], arr[i]];
             }
         }
 
         function loadQuestion() {
-            if (remainingQuestions.length === 0) {
-                document.getElementById("question").innerText = `Τέλος του κουίζ! Το τελικό σου σκορ είναι: ${score}`;
-                document.getElementById("buttons-container").innerHTML = "";
-                document.getElementById("restart-btn").style.display = "block";
+            if (questionIndex >= questions.length) {
+                document.getElementById("question").innerText = "Τελείωσες τις ερωτήσεις!";
+                document.getElementById("result").innerText = "Το τελικό σου σκορ: " + score;
+                document.getElementById("correct-answer").innerText = "";
+                document.getElementById("buttons-container").style.display = "none";
                 return;
             }
 
-            const randomIndex = Math.floor(Math.random() * remainingQuestions.length);
-            const currentQuestion = remainingQuestions[randomIndex];
-
-            remainingQuestions.splice(randomIndex, 1);
-
-            document.getElementById("question").innerText = currentQuestion.question;
-
-            let shuffledOptions = [...currentQuestion.options];
-            shuffleArray(shuffledOptions);
-
-            let buttonsContainer = document.getElementById("buttons-container");
-            buttonsContainer.innerHTML = "";
-
-            shuffledOptions.forEach(option => {
-                let btn = document.createElement("button");
-                btn.innerText = option;
-                btn.onclick = function () { checkAnswer(option, currentQuestion.correctAnswer, btn); };
-                buttonsContainer.appendChild(btn);
-            });
+            shuffleArray(questions);
+            let question = questions[questionIndex];
+            document.getElementById("question").innerText = question.question;
+            shuffleArray(question.options);
+            
+            let buttons = document.querySelectorAll("#buttons-container button");
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].innerText = question.options[i];
+                buttons[i].disabled = false;
+                buttons[i].classList.remove("correct", "incorrect");
+            }
 
             document.getElementById("result").innerText = "";
+            document.getElementById("correct-answer").innerText = "";
         }
 
-        function checkAnswer(selected, correct, button) {
-            if (selected === correct) {
-                document.getElementById("result").innerHTML = "<span class='correct'>Σωστό!</span>";
-                button.style.backgroundColor = "green";
+        function checkAnswer(answer, button) {
+            let result = document.getElementById("result");
+            let correctAnswerText = document.getElementById("correct-answer");
+            let question = questions[questionIndex];
+
+            if (answer === question.correctAnswer) {
+                result.innerHTML = "<span class='correct'>Σωστό!</span>";
+                button.classList.add("correct");
                 score++;
             } else {
-                document.getElementById("result").innerHTML = "<span class='incorrect'>Λάθος! Η σωστή απάντηση είναι: " + correct + ".</span>";
-                button.style.backgroundColor = "red";
+                result.innerHTML = "<span class='incorrect'>Λάθος!</span>";
+                button.classList.add("incorrect");
+                correctAnswerText.innerText = "Η σωστή απάντηση είναι: " + question.correctAnswer;
                 score--;
             }
 
-            document.getElementById("score").innerText = `Σκορ: ${score}`;
+            document.getElementById("score").innerText = "Σκορ: " + score;
+            disableButtons();
+            setTimeout(nextQuestion, 2000);
+        }
 
+        function disableButtons() {
             let buttons = document.querySelectorAll("#buttons-container button");
-            buttons.forEach(btn => btn.disabled = true);
+            buttons.forEach(button => {
+                button.disabled = true;
+            });
+        }
 
-            setTimeout(loadQuestion, 2000);
+        function nextQuestion() {
+            questionIndex++;
+            loadQuestion();
         }
 
         function restartQuiz() {
-            remainingQuestions = [...questions];
+            questionIndex = 0;
             score = 0;
+            document.getElementById("buttons-container").style.display = "block";
             document.getElementById("score").innerText = "Σκορ: 0";
-            document.getElementById("restart-btn").style.display = "none";
             loadQuestion();
         }
 
         function goBack() {
-            window.location.href = "index.html"; // Αρχική σελίδα
+            window.location.href = "index.html";
         }
 
         loadQuestion();
