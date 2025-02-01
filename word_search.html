@@ -17,7 +17,7 @@
 <body>
 
     <h1>Βρείτε τη λέξη</h1>
-    <p>Βρείτε τη λέξη: <strong>ΙΧΘΥΣ</strong></p>
+    <p>Βρείτε τις λέξεις: <strong>ΙΧΘΥΣ, ΑΓΙΟΣ, ΛΟΓΟΣ</strong></p>
     <div class="search-container" id="searchGrid"></div>
     <p id="wordResult"></p>
     <p class="timer" id="timer">Χρόνος: 30</p>
@@ -25,18 +25,13 @@
     <button onclick="window.location.href = 'index.html';">Επιστροφή στη λίστα παιχνιδιών</button>
 
     <script>
-        // الكلمات التي سنبحث عنها
-        const words = ['ΙΧΘΥΣ', 'ΑΓΙΟΣ', 'ΛΟΓΟΣ'];
-        const gridSize = 10; // حجم الشبكة 10x10
-
-        let timerInterval;
-        let timeLeft = 30;
-        let wordResult = document.getElementById("wordResult");
-        let timerDisplay = document.getElementById("timer");
-
-        // شبكة اللعبة
+        const words = ['ΙΧΘΥΣ', 'ΑΓΙΟΣ', 'ΛΟΓΟΣ']; // Λέξεις για αναζήτηση
+        const gridSize = 10; // Μέγεθος πίνακα 10x10
         let grid = [];
+        let timeLeft = 30;
+        let timerInterval;
 
+        // Δημιουργία του πίνακα
         function createGrid() {
             grid = [];
             let gridContainer = document.getElementById("searchGrid");
@@ -56,26 +51,26 @@
             placeWords();
         }
 
+        // Τοποθέτηση των λέξεων στον πίνακα
         function placeWords() {
             words.forEach(word => {
                 let placed = false;
                 while (!placed) {
-                    // اختيار موقع عشوائي للكلمة
-                    let dir = Math.floor(Math.random() * 3); // عمودي، أفقي، قطري
+                    let dir = Math.floor(Math.random() * 3); // Επιλογή κατεύθυνσης (οριζόντια, κάθετη, διαγώνια)
                     let row = Math.floor(Math.random() * gridSize);
                     let col = Math.floor(Math.random() * gridSize);
-                    
-                    // التحقق إذا كان بإمكاننا وضع الكلمة في المكان المختار
+
+                    // Έλεγχος αν μπορεί να τοποθετηθεί η λέξη
                     if (canPlaceWord(word, row, col, dir)) {
                         placed = true;
                         for (let i = 0; i < word.length; i++) {
-                            if (dir === 0) { // أفقي
+                            if (dir === 0) { // Οριζόντια
                                 grid[row][col + i] = word[i];
                                 document.querySelector(`[data-x="${row}"][data-y="${col + i}"]`).innerText = word[i];
-                            } else if (dir === 1) { // عمودي
+                            } else if (dir === 1) { // Κάθετη
                                 grid[row + i][col] = word[i];
                                 document.querySelector(`[data-x="${row + i}"][data-y="${col}"]`).innerText = word[i];
-                            } else { // قطري
+                            } else { // Διαγώνια
                                 grid[row + i][col + i] = word[i];
                                 document.querySelector(`[data-x="${row + i}"][data-y="${col + i}"]`).innerText = word[i];
                             }
@@ -85,18 +80,19 @@
             });
         }
 
+        // Έλεγχος αν μπορεί να τοποθετηθεί η λέξη
         function canPlaceWord(word, row, col, dir) {
-            if (dir === 0) { // أفقي
+            if (dir === 0) { // Οριζόντια
                 if (col + word.length > gridSize) return false;
                 for (let i = 0; i < word.length; i++) {
                     if (grid[row][col + i] !== '') return false;
                 }
-            } else if (dir === 1) { // عمودي
+            } else if (dir === 1) { // Κάθετη
                 if (row + word.length > gridSize) return false;
                 for (let i = 0; i < word.length; i++) {
                     if (grid[row + i][col] !== '') return false;
                 }
-            } else { // قطري
+            } else { // Διαγώνια
                 if (row + word.length > gridSize || col + word.length > gridSize) return false;
                 for (let i = 0; i < word.length; i++) {
                     if (grid[row + i][col + i] !== '') return false;
@@ -105,31 +101,34 @@
             return true;
         }
 
+        // Έλεγχος αν έχει βρεθεί σωστά η λέξη
         function checkWord(cell) {
             if (cell.classList.contains('found')) return;
-            
+
             let word = cell.innerText;
             if (word !== '') {
                 cell.classList.add('found');
                 if (checkAllFound()) {
-                    wordResult.innerHTML = "<span class='correct'>Συγχαρητήρια! Βρήκατε όλες τις λέξεις!</span>";
+                    document.getElementById("wordResult").innerHTML = "<span class='correct'>Συγχαρητήρια! Βρήκατε όλες τις λέξεις!</span>";
                 }
             }
         }
 
+        // Έλεγχος αν έχουν βρεθεί όλες οι λέξεις
         function checkAllFound() {
             const foundCells = document.querySelectorAll('.found');
             const totalCells = document.querySelectorAll('.search-item').length;
             return foundCells.length === totalCells;
         }
 
+        // Έναρξη χρονομέτρησης
         function startTimer() {
             timerInterval = setInterval(() => {
                 timeLeft--;
-                timerDisplay.innerText = `Χρόνος: ${timeLeft}`;
+                document.getElementById("timer").innerText = `Χρόνος: ${timeLeft}`;
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
-                    wordResult.innerHTML = "<span class='incorrect'>Ο χρόνος εξαντλήθηκε! Παίξτε ξανά.</span>";
+                    document.getElementById("wordResult").innerHTML = "<span class='incorrect'>Ο χρόνος εξαντλήθηκε! Παίξτε ξανά.</span>";
                 }
             }, 1000);
         }
