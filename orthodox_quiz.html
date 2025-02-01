@@ -8,8 +8,8 @@
         body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
         .game-box { background: white; padding: 20px; margin: 20px auto; border-radius: 10px; width: 60%; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
         button { padding: 10px; margin-top: 10px; cursor: pointer; }
-        .correct { color: green; font-weight: bold; }
-        .incorrect { color: red; font-weight: bold; }
+        .correct { background-color: green; color: white; }
+        .incorrect { background-color: red; color: white; }
     </style>
 </head>
 <body>
@@ -17,13 +17,12 @@
     <h1>Ερωτήσεις Ορθόδοξης Πίστης</h1>
     <div class="game-box">
         <p id="question">Ποιος ήταν ο πρώτος μαθητής του Ιησού;</p>
-        <button onclick="checkAnswer('Πέτρος')">Πέτρος</button>
-        <button onclick="checkAnswer('Παύλος')">Παύλος</button>
-        <button onclick="checkAnswer('Ιωάννης')">Ιωάννης</button>
+        <button onclick="checkAnswer('Πέτρος', this)">Πέτρος</button>
+        <button onclick="checkAnswer('Παύλος', this)">Παύλος</button>
+        <button onclick="checkAnswer('Ιωάννης', this)">Ιωάννης</button>
         <p id="result"></p>
-        <button onclick="nextQuestion()">Επόμενη Ερώτηση</button> <!-- زر الانتقال للسؤال التالي -->
         <br><br>
-        <button onclick="window.location.href = 'index.html';">Επιστροφή στη λίστα παιχνιδιών</button> <!-- زر العودة للصفحة الرئيسية -->
+        <button onclick="window.location.href = 'index.html';">Επιστροφή στη λίστα παιχνιδιών</button> <!-- زر العودة -->
     </div>
 
     <script>
@@ -34,13 +33,28 @@
             { question: "Ποιοι είναι οι 12 Απόστολοι;", correctAnswer: "Όλοι" }
         ];
 
-        function checkAnswer(answer) {
+        function checkAnswer(answer, button) {
             let result = document.getElementById("result");
             if (answer === questions[questionIndex].correctAnswer) {
                 result.innerHTML = "<span class='correct'>Σωστό!</span>";
+                button.classList.add("correct"); // تغيير اللون إلى الأخضر
             } else {
                 result.innerHTML = "<span class='incorrect'>Λάθος!</span>";
+                button.classList.add("incorrect"); // تغيير اللون إلى الأحمر
             }
+
+            // تعطيل جميع الأزرار بعد الإجابة
+            disableButtons();
+
+            // الانتقال للسؤال التالي بعد 1.5 ثانية
+            setTimeout(nextQuestion, 1500);
+        }
+
+        function disableButtons() {
+            let buttons = document.querySelectorAll("button");
+            buttons.forEach(button => {
+                button.disabled = true;
+            });
         }
 
         function nextQuestion() {
@@ -48,8 +62,16 @@
             if (questionIndex < questions.length) {
                 document.getElementById("question").innerText = questions[questionIndex].question;
                 document.getElementById("result").innerText = "";
+
+                // إعادة تفعيل الأزرار
+                let buttons = document.querySelectorAll("button");
+                buttons.forEach(button => {
+                    button.disabled = false;
+                    button.classList.remove("correct", "incorrect"); // إزالة الألوان
+                });
             } else {
                 document.getElementById("question").innerText = "Τελείωσες τις ερωτήσεις! Ευχαριστούμε!";
+                document.getElementById("result").innerText = "";
             }
         }
     </script>
