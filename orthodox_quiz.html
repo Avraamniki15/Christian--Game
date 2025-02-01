@@ -126,7 +126,7 @@
         // Function to start the game
         function startGame() {
             shuffle(questions); // Shuffle the questions at the start
-            showQuestion(0); // Show the first question after shuffling
+            showQuestion(currentQuestionIndex); // Show the first question after shuffling
         }
 
         // Function to display the current question
@@ -161,9 +161,10 @@
             // Update the score
             document.getElementById("score").textContent = "Σκορ: " + score;
 
+            // Move to the next question
             currentQuestionIndex++;
             if (currentQuestionIndex < questions.length) {
-                setTimeout(() => showQuestion(currentQuestionIndex), 7000); // Show next question after 3 seconds
+                setTimeout(() => showQuestion(currentQuestionIndex), 3000); // Show next question after 3 seconds
             } else {
                 result.innerHTML += "<br><span class='correct'>Η φάση ολοκληρώθηκε! Ευχαριστούμε για το παιχνίδι!</span>";
             }
