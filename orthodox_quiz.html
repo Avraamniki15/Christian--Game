@@ -21,13 +21,36 @@
         <button onclick="checkAnswer('Παύλος')">Παύλος</button>
         <button onclick="checkAnswer('Ιωάννης')">Ιωάννης</button>
         <p id="result"></p>
+        <button onclick="nextQuestion()">Επόμενη Ερώτηση</button> <!-- زر الانتقال للسؤال التالي -->
+        <br><br>
+        <button onclick="window.location.href = 'index.html';">Επιστροφή στη λίστα παιχνιδιών</button> <!-- زر العودة للصفحة الرئيسية -->
     </div>
 
     <script>
+        let questionIndex = 0;
+        const questions = [
+            { question: "Ποιος ήταν ο πρώτος μαθητής του Ιησού;", correctAnswer: "Πέτρος" },
+            { question: "Ποιος ήταν ο Άγιος που θεράπευσε την πεθερά του Πέτρου;", correctAnswer: "Ιησούς" },
+            { question: "Ποιοι είναι οι 12 Απόστολοι;", correctAnswer: "Όλοι" }
+        ];
+
         function checkAnswer(answer) {
-            let correctAnswer = "Πέτρος";
             let result = document.getElementById("result");
-            result.innerHTML = answer === correctAnswer ? "<span class='correct'>Σωστό!</span>" : "<span class='incorrect'>Λάθος!</span>";
+            if (answer === questions[questionIndex].correctAnswer) {
+                result.innerHTML = "<span class='correct'>Σωστό!</span>";
+            } else {
+                result.innerHTML = "<span class='incorrect'>Λάθος!</span>";
+            }
+        }
+
+        function nextQuestion() {
+            questionIndex++;
+            if (questionIndex < questions.length) {
+                document.getElementById("question").innerText = questions[questionIndex].question;
+                document.getElementById("result").innerText = "";
+            } else {
+                document.getElementById("question").innerText = "Τελείωσες τις ερωτήσεις! Ευχαριστούμε!";
+            }
         }
     </script>
 
