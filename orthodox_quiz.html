@@ -149,7 +149,7 @@
             const question = questions[currentQuestionIndex];
             const result = document.getElementById("result");
 
-            // Check if the answer is correct
+            // Strict comparison (case sensitive and no extra spaces)
             if (answer === question.correctAnswer) {
                 result.innerHTML = "<span class='correct'>Σωστό!</span>";
                 score++; // Increase score for correct answer
