@@ -149,8 +149,8 @@
             const question = questions[currentQuestionIndex];
             const result = document.getElementById("result");
 
-            // Check if the answer is correct
-            if (answer === question.correctAnswer) {
+            // Use trim() to remove any extra spaces and compare the answers accurately
+            if (answer.trim() === question.correctAnswer.trim()) {
                 result.innerHTML = "<span class='correct'>Σωστό!</span>";
                 score++; // Increase score for correct answer
             } else {
@@ -163,7 +163,7 @@
 
             currentQuestionIndex++;
             if (currentQuestionIndex < questions.length) {
-                setTimeout(() => showQuestion(currentQuestionIndex), 8000); // Show next question after 3 seconds
+                setTimeout(() => showQuestion(currentQuestionIndex), 7000); // Show next question after 3 seconds
             } else {
                 result.innerHTML += "<br><span class='correct'>Η φάση ολοκληρώθηκε! Ευχαριστούμε για το παιχνίδι!</span>";
             }
