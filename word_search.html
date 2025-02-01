@@ -35,6 +35,7 @@
         let timeLeft = 50; // Χρόνος 50 δευτερόλεπτα για κάθε γύρο
         let timerInterval;
         let score = 0; // Αρχικό σκορ
+        let wordsFound = 0; // Αριθμός λέξεων που βρέθηκαν
 
         // Επιλογή τυχαίας λέξης
         function getRandomWord() {
@@ -62,6 +63,7 @@
             }
             placeWord(currentWord);
             fillEmptySpaces();
+            wordsFound = 0; // Επαναφορά του μετρητή λέξεων για τον νέο γύρο
         }
 
         // Τοποθέτηση της λέξης στον πίνακα
@@ -132,20 +134,14 @@
             let word = cell.innerText;
             if (word !== '') {
                 cell.classList.add('found');
-                if (checkAllFound()) {
+                wordsFound++; // Αύξηση του αριθμού των λέξεων που βρέθηκαν
+                if (wordsFound === currentWord.length) {
                     score++; // Αύξηση σκορ
                     document.getElementById("score").innerText = `Σκορ: ${score}`; // Ενημέρωση σκορ
                     document.getElementById("wordResult").innerHTML = "<span class='correct'>Συγχαρητήρια! Βρήκατε την λέξη!</span>";
                     setTimeout(nextRound, 2000); // Πέρασμα στον επόμενο γύρο μετά από 2 δευτερόλεπτα
                 }
             }
-        }
-
-        // Έλεγχος αν έχουν βρεθεί όλες οι λέξεις
-        function checkAllFound() {
-            const foundCells = document.querySelectorAll('.found');
-            const totalCells = document.querySelectorAll('.search-item').length;
-            return foundCells.length === totalCells;
         }
 
         // Επόμενος γύρος
