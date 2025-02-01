@@ -36,6 +36,7 @@
         let timerInterval;
         let score = 0; // Αρχικό σκορ
         let wordsFound = 0; // Αριθμός λέξεων που βρέθηκαν
+        let wordFound = false; // Έλεγχος αν η λέξη έχει βρεθεί
 
         // Επιλογή τυχαίας λέξης
         function getRandomWord() {
@@ -64,6 +65,7 @@
             placeWord(currentWord);
             fillEmptySpaces();
             wordsFound = 0; // Επαναφορά του μετρητή λέξεων για τον νέο γύρο
+            wordFound = false; // Επαναφορά του έλεγχου για την λέξη
         }
 
         // Τοποθέτηση της λέξης στον πίνακα
@@ -129,7 +131,7 @@
 
         // Έλεγχος αν έχει βρεθεί σωστά η λέξη
         function checkWord(cell) {
-            if (cell.classList.contains('found')) return;
+            if (cell.classList.contains('found') || wordFound) return; // Αν η λέξη έχει βρεθεί ή αν το κελί είναι ήδη "found", κάνε τίποτα.
 
             let word = cell.innerText;
             if (word !== '') {
@@ -138,6 +140,7 @@
                 if (wordsFound === currentWord.length) {
                     score++; // Αύξηση σκορ
                     document.getElementById("score").innerText = `Σκορ: ${score}`; // Ενημέρωση σκορ
+                    wordFound = true; // Η λέξη βρέθηκε
                     document.getElementById("wordResult").innerHTML = "<span class='correct'>Συγχαρητήρια! Βρήκατε την λέξη!</span>";
                     setTimeout(nextRound, 2000); // Πέρασμα στον επόμενο γύρο μετά από 2 δευτερόλεπτα
                 }
