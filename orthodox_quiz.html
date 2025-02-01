@@ -15,6 +15,7 @@
             align-items: center;
             height: 100vh;
             background-color: #f4f7f6;
+            flex-direction: column;
         }
 
         #quiz-container {
@@ -71,6 +72,15 @@
         #restart-btn:hover {
             background-color: #e64a19;
         }
+
+        #back-btn {
+            margin-top: 20px;
+            background-color: #007bff;
+        }
+
+        #back-btn:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -80,6 +90,7 @@
         <p id="result"></p>
         <button id="restart-btn" onclick="restartQuiz()">Ξαναπαίξε</button>
     </div>
+    <button id="back-btn" onclick="goBack()">Επιστροφή στην Αρχική</button>
 
     <script>
         const questions = [
@@ -90,7 +101,7 @@
             { question: "Ποιό είναι το πρώτο βιβλίο της Καινής Διαθήκης;", correctAnswer: "Το Ευαγγέλιο κατά Ματθαίον", options: ["Το Ευαγγέλιο κατά Ματθαίον", "Το Ευαγγέλιο κατά Ιωάννη", "Η Πράξεις των Αποστόλων"] }
         ];
 
-        let remainingQuestions = [...questions]; // Αντιγραφή των ερωτήσεων ώστε να μη χαθεί η αρχική λίστα
+        let remainingQuestions = [...questions];
 
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -107,16 +118,13 @@
                 return;
             }
 
-            // Επιλογή τυχαίας ερώτησης από τις διαθέσιμες
             const randomIndex = Math.floor(Math.random() * remainingQuestions.length);
             const currentQuestion = remainingQuestions[randomIndex];
 
-            // Αφαιρούμε την ερώτηση από τη λίστα
             remainingQuestions.splice(randomIndex, 1);
 
             document.getElementById("question").innerText = currentQuestion.question;
 
-            // Ανακατεύουμε τις απαντήσεις
             let shuffledOptions = [...currentQuestion.options];
             shuffleArray(shuffledOptions);
 
@@ -142,21 +150,22 @@
                 button.style.backgroundColor = "red";
             }
 
-            // Απενεργοποιούμε όλα τα κουμπιά μετά την απάντηση
             let buttons = document.querySelectorAll("#buttons-container button");
             buttons.forEach(btn => btn.disabled = true);
 
-            // Μετά από 2 δευτερόλεπτα, φορτώνουμε την επόμενη ερώτηση
             setTimeout(loadQuestion, 2000);
         }
 
         function restartQuiz() {
-            remainingQuestions = [...questions]; // Επαναφορά ερωτήσεων
+            remainingQuestions = [...questions];
             document.getElementById("restart-btn").style.display = "none";
             loadQuestion();
         }
 
-        // Ξεκινάμε με μια τυχαία ερώτηση
+        function goBack() {
+            window.location.href = "index.html"; // Εδώ βάλε το όνομα του αρχείου της αρχικής σελίδας
+        }
+
         loadQuestion();
     </script>
 </body>
