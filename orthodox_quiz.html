@@ -10,6 +10,7 @@
         button { padding: 10px; margin-top: 10px; cursor: pointer; }
         .correct { background-color: green; color: white; }
         .incorrect { background-color: red; color: white; }
+        .correct-answer { font-weight: bold; color: blue; }
     </style>
 </head>
 <body>
@@ -21,6 +22,7 @@
         <button onclick="checkAnswer('Παύλος', this)">Παύλος</button>
         <button onclick="checkAnswer('Ιωάννης', this)">Ιωάννης</button>
         <p id="result"></p>
+        <p id="correct-answer" class="correct-answer"></p> <!-- لعرض الإجابة الصحيحة -->
         <br><br>
         <button onclick="window.location.href = 'index.html';">Επιστροφή στη λίστα παιχνιδιών</button> <!-- زر العودة -->
     </div>
@@ -35,19 +37,23 @@
 
         function checkAnswer(answer, button) {
             let result = document.getElementById("result");
+            let correctAnswerText = document.getElementById("correct-answer");
+
             if (answer === questions[questionIndex].correctAnswer) {
                 result.innerHTML = "<span class='correct'>Σωστό!</span>";
                 button.classList.add("correct"); // تغيير اللون إلى الأخضر
             } else {
                 result.innerHTML = "<span class='incorrect'>Λάθος!</span>";
                 button.classList.add("incorrect"); // تغيير اللون إلى الأحمر
+                // عرض الإجابة الصحيحة بعد الإجابة الخاطئة
+                correctAnswerText.innerHTML = "Η σωστή απάντηση είναι: " + questions[questionIndex].correctAnswer;
             }
 
             // تعطيل جميع الأزرار بعد الإجابة
             disableButtons();
 
-            // الانتقال للسؤال التالي بعد 1.5 ثانية
-            setTimeout(nextQuestion, 1500);
+            // الانتقال للسؤال التالي بعد 2 ثانية
+            setTimeout(nextQuestion, 2000);
         }
 
         function disableButtons() {
@@ -62,6 +68,7 @@
             if (questionIndex < questions.length) {
                 document.getElementById("question").innerText = questions[questionIndex].question;
                 document.getElementById("result").innerText = "";
+                document.getElementById("correct-answer").innerText = ""; // مسح الإجابة الصحيحة
 
                 // إعادة تفعيل الأزرار
                 let buttons = document.querySelectorAll("button");
