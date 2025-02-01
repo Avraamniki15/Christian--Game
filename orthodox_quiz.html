@@ -5,27 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ερωτήσεις Ορθόδοξης Πίστης</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        .game-box { background: white; padding: 20px; margin: 20px auto; border-radius: 10px; width: 60%; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
-        button { padding: 10px; margin-top: 10px; cursor: pointer; }
-        .correct { color: green; font-weight: bold; }
-        .incorrect { color: red; font-weight: bold; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        h1 {
+            color: #4CAF50;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .game-box {
+            background: #ffffff;
+            padding: 30px;
+            margin: 20px auto;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .question {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            margin: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
+
+        .incorrect {
+            color: red;
+            font-weight: bold;
+        }
+
+        .score {
+            font-size: 22px;
+            margin-top: 20px;
+            color: #555;
+        }
+
+        .result {
+            font-size: 20px;
+            margin-top: 15px;
+        }
+
+        .game-footer {
+            margin-top: 40px;
+            font-size: 18px;
+            color: #777;
+        }
+
     </style>
 </head>
 <body>
 
     <h1>Ερωτήσεις Ορθόδοξης Πίστης</h1>
-    <p id="score">Σκορ: 0</p>
+    <p id="score" class="score">Σκορ: 0</p>
     <div class="game-box">
-        <p id="question">Ποιος ήταν ο πρώτος μαθητής του Ιησού;</p>
+        <p id="question" class="question">Ποιος ήταν ο πρώτος μαθητής του Ιησού;</p>
         <button onclick="checkAnswer('Πέτρος')">Πέτρος</button>
         <button onclick="checkAnswer('Παύλος')">Παύλος</button>
         <button onclick="checkAnswer('Ιωάννης')">Ιωάννης</button>
-        <p id="result"></p>
+        <p id="result" class="result"></p>
+    </div>
+
+    <div class="game-footer">
+        <p>Ευχαριστούμε για το παιχνίδι! Ελπίζουμε να μάθατε περισσότερα!</p>
     </div>
 
     <script>
-        // قائمة الأسئلة
         const questions = [
             { question: "Ποιος ήταν ο πρώτος μαθητής του Ιησού;", correctAnswer: "Πέτρος", options: ["Πέτρος", "Παύλος", "Ιωάννης"] },
             { question: "Ποιος είναι ο πατέρας του Ιησού;", correctAnswer: "Ο Θεός Πατέρας", options: ["Ο Θεός Πατέρας", "Ο Ιωσήφ", "Ο Σαούλ"] },
@@ -36,74 +109,66 @@
             { question: "Ποιός είναι ο Άγιος που θεωρείται ο προστάτης των ναυτικών;", correctAnswer: "Άγιος Νικόλαος", options: ["Άγιος Νικόλαος", "Άγιος Γεώργιος", "Άγιος Δημήτριος"] },
             { question: "Ποιος ήταν ο πρώτος Χριστιανός μάρτυρας;", correctAnswer: "Άγιος Στέφανος", options: ["Άγιος Στέφανος", "Άγιος Παύλος", "Άγιος Ανδρέας"] },
             { question: "Ποιός ήταν ο μεγάλος Άγιος του Αγίου Όρους;", correctAnswer: "Άγιος Παΐσιος", options: ["Άγιος Παΐσιος", "Άγιος Ιωάννης", "Άγιος Θεόδωρος"] },
-            { question: "Ποιο ήταν το όνομα του πρώτου ηγούμενου της Ιεράς Μονής του Αγίου Όρους;", correctAnswer: "Άγιος Σάββας ο Ηγούμενος", options: ["Άγιος Σάββας ο Ηγούμενος", "Άγιος Αθανάσιος", "Άγιος Ευστράτιος"] },
-            { question: "Ποιο είναι το δεύτερο βιβλίο της Καινής Διαθήκης;", correctAnswer: "Το Ευαγγέλιο κατά Μάρκον", options: ["Το Ευαγγέλιο κατά Μάρκον", "Το Ευαγγέλιο κατά Λουκάν", "Το Ευαγγέλιο κατά Ιωάννη"] },
-            { question: "Ποιος ήταν ο πρώτος Χριστιανός αυτοκράτορας;", correctAnswer: "Ο Μέγας Κωνσταντίνος", options: ["Ο Μέγας Κωνσταντίνος", "Ο Ιουλιανός", "Ο Αύγουστος"] },
-            { question: "Ποια είναι η ημερομηνία της Ανάστασης του Χριστού;", correctAnswer: "Το Πάσχα", options: ["Το Πάσχα", "Τα Χριστούγεννα", "Η Μεγάλη Παρασκευή"] },
-            { question: "Ποιος ήταν ο Άγιος που έγραψε την Αποκάλυψη;", correctAnswer: "Άγιος Ιωάννης", options: ["Άγιος Ιωάννης", "Άγιος Παύλος", "Άγιος Λουκάς"] },
-            { question: "Ποιο είναι το πιο σημαντικό μυστήριο της Χριστιανικής πίστης;", correctAnswer: "Η Θεία Ευχαριστία", options: ["Η Θεία Ευχαριστία", "Η Βάπτιση", "Η Εξομολόγηση"] },
-            { question: "Ποιοι είναι οι τρεις μεγάλοι Πατέρες της Εκκλησίας;", correctAnswer: "Άγιος Ιωάννης Χρυσόστομος, Άγιος Βασίλειος, Άγιος Γρηγόριος", options: ["Άγιος Ιωάννης Χρυσόστομος, Άγιος Βασίλειος, Άγιος Γρηγόριος", "Άγιος Αθανάσιος, Άγιος Ιουστίνος, Άγιος Παύλος", "Άγιος Σπυρίδων, Άγιος Νικόλαος, Άγιος Αμβρόσιος"] },
-            { question: "Ποιος είναι ο Άγιος του θαύματος με το λάδι;", correctAnswer: "Άγιος Σπυρίδων", options: ["Άγιος Σπυρίδων", "Άγιος Γεώργιος", "Άγιος Βασίλειος"] },
-            { question: "Ποιος είναι ο πατέρας της Εκκλησίας;", correctAnswer: "Άγιος Ιγνάτιος", options: ["Άγιος Ιγνάτιος", "Άγιος Ιωάννης Χρυσόστομος", "Άγιος Βασίλειος"] },
-            { question: "Ποιο ήταν το όνομα του Αγίου που γιορτάζεται την 9η Μαΐου;", correctAnswer: "Άγιος Νικόλαος", options: ["Άγιος Νικόλαος", "Άγιος Παύλος", "Άγιος Δημήτριος"] }
+            { question: "Ποιο ήταν το όνομα του πρώτου ηγούμενου της Ιεράς Μονής του Αγίου Όρους;", correctAnswer: "Άγιος Σάββας ο Ηγούμενος", options: ["Άγιος Σάββας ο Ηγούμενος", "Άγιος Αθανάσιος", "Άγιος Ευστράτιος"] }
         ];
 
-        let currentQuestionIndex = 0; // بداية السؤال الأول
-        let score = 0; // تعيين بداية السكور
+        let currentQuestionIndex = 0; // Starting question index
+        let score = 0; // Initial score
 
-        // دالة لخلط الأسئلة بشكل عشوائي
+        // Shuffle the questions array to randomize the order of questions
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]]; // التبديل بين العناصر
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
             }
         }
 
-        // دالة لبدء اللعبة
+        // Function to start the game
         function startGame() {
-            shuffle(questions); // خلط الأسئلة قبل بدء اللعبة
-            showQuestion(0); // عرض أول سؤال بعد الخلط
+            shuffle(questions); // Shuffle the questions at the start
+            showQuestion(0); // Show the first question after shuffling
         }
 
+        // Function to display the current question
         function showQuestion(index) {
             const question = questions[index];
             document.getElementById("question").textContent = question.question;
 
-            // تحديث الأزرار مع الخيارات العشوائية
+            // Update buttons with the options
             const buttons = document.querySelectorAll("button");
             buttons[0].textContent = question.options[0];
             buttons[1].textContent = question.options[1];
             buttons[2].textContent = question.options[2];
 
-            // إعادة تعيين نتيجة الإجابة
+            // Clear previous result
             document.getElementById("result").textContent = "";
         }
 
+        // Function to check the answer
         function checkAnswer(answer) {
             const question = questions[currentQuestionIndex];
             const result = document.getElementById("result");
 
-            // تغيير اللون للجواب الصحيح أو الخاطئ
             if (answer === question.correctAnswer) {
                 result.innerHTML = "<span class='correct'>Σωστό!</span>";
-                score++; // إضافة نقطة للسكور
+                score++; // Increase score for correct answer
             } else {
                 result.innerHTML = "<span class='incorrect'>Λάθος!</span><br>Η σωστή απάντηση είναι: " + question.correctAnswer;
-                score--; // خصم نقطة من السكور في حالة الإجابة الخاطئة
+                score--; // Decrease score for incorrect answer
             }
 
-            // تحديث السكور
+            // Update the score
             document.getElementById("score").textContent = "Σκορ: " + score;
 
             currentQuestionIndex++;
             if (currentQuestionIndex < questions.length) {
-                setTimeout(() => showQuestion(currentQuestionIndex), 7000); // الانتقال للسؤال التالي بعد 1 ثانية
+                setTimeout(() => showQuestion(currentQuestionIndex), 7000); // Show next question after 3 seconds
             } else {
                 result.innerHTML += "<br><span class='correct'>Η φάση ολοκληρώθηκε! Ευχαριστούμε για το παιχνίδι!</span>";
             }
         }
 
-        // بدء اللعبة عند تحميل الصفحة
+        // Start the game when the page loads
         window.onload = startGame;
     </script>
 
