@@ -5,14 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Κουίζ Χριστιανικής Θρησκείας</title>
     <style>
+        /* Γενικά στυλ για το σώμα */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        /* Στυλ για το κουίζ container */
+        #quiz-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            max-width: 100%;
+        }
+
+        /* Στυλ για τον τίτλο */
+        h2 {
+            font-size: 24px;
+            color: #444;
+        }
+
+        /* Στυλ για τις επιλογές κουμπιών */
+        button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 15px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Στυλ για τα αποτελέσματα */
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
         .correct {
             color: green;
         }
+
         .incorrect {
             color: red;
         }
-        button:disabled {
-            background-color: gray;
+
+        /* Στυλ για την σωστή απάντηση */
+        #correct-answer {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+
+        /* Αντιμετώπιση μικρών οθονών */
+        @media (max-width: 600px) {
+            #quiz-container {
+                width: 100%;
+                padding: 20px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 12px;
+            }
         }
     </style>
 </head>
@@ -85,56 +164,6 @@
                 question: "Ποιός είναι ο Άγιος προστάτης της οικογένειας;", 
                 correctAnswer: "Άγιος Ιωσήφ", 
                 options: ["Άγιος Ιωσήφ", "Άγιος Γεώργιος", "Άγιος Ανδρέας"] 
-            },
-            { 
-                question: "Ποιος ήταν ο Άγιος που ανέστησε το παιδί του Σαρουχίμ;", 
-                correctAnswer: "Άγιος Ηλίας", 
-                options: ["Άγιος Ηλίας", "Άγιος Γεώργιος", "Άγιος Παύλος"] 
-            },
-            { 
-                question: "Ποιός είναι ο πρώτος Χριστιανός μάρτυρας του Ελληνορθόδοξου Πατριαρχείου Ιεροσολύμων;", 
-                correctAnswer: "Άγιος Στέφανος", 
-                options: ["Άγιος Στέφανος", "Άγιος Παύλος", "Άγιος Ανδρέας"] 
-            },
-            { 
-                question: "Ποιο είναι το όνομα του πρώτου Αποστόλου του Χριστού που έγιναν και επισκόποι;", 
-                correctAnswer: "Άγιος Ανδρέας", 
-                options: ["Άγιος Ανδρέας", "Άγιος Ιωάννης", "Άγιος Πέτρος"] 
-            },
-            { 
-                question: "Ποιο είναι το όνομα της μητέρας του Χριστού;", 
-                correctAnswer: "Η Παναγία", 
-                options: ["Η Παναγία", "Η Μαρία", "Η Ελισάβετ"] 
-            },
-            { 
-                question: "Ποιος είναι ο Άγιος που θεωρείται ο προστάτης της Ρωσίας;", 
-                correctAnswer: "Άγιος Βλαδίμηρος", 
-                options: ["Άγιος Βλαδίμηρος", "Άγιος Πέτρος", "Άγιος Ιωάννης"] 
-            },
-            { 
-                question: "Ποιος είναι ο πρώτος επίσκοπος της Αιγύπτου;", 
-                correctAnswer: "Άγιος Μάρκος", 
-                options: ["Άγιος Μάρκος", "Άγιος Ιωάννης", "Άγιος Παύλος"] 
-            },
-            { 
-                question: "Ποιο είναι το όνομα του αγίου που εορτάζεται στις 20 Ιανουαρίου;", 
-                correctAnswer: "Άγιος Ευθύμιος", 
-                options: ["Άγιος Ευθύμιος", "Άγιος Αντώνιος", "Άγιος Στέφανος"] 
-            },
-            { 
-                question: "Ποιό είναι το όνομα του πρώτου Πατριάρχη Κωνσταντινουπόλεως;", 
-                correctAnswer: "Άγιος Αντίοχος", 
-                options: ["Άγιος Αντίοχος", "Άγιος Γεώργιος", "Άγιος Ιωάννης"] 
-            },
-            { 
-                question: "Ποιος είναι ο Άγιος προστάτης των γιατρών;", 
-                correctAnswer: "Άγιος Παντελεήμων", 
-                options: ["Άγιος Παντελεήμων", "Άγιος Δημήτριος", "Άγιος Παύλος"] 
-            },
-            { 
-                question: "Ποια είναι η ημερομηνία της εορτής της Υπαπαντής του Χριστού;", 
-                correctAnswer: "2 Φεβρουαρίου", 
-                options: ["2 Φεβρουαρίου", "15 Απριλίου", "25 Δεκεμβρίου"] 
             }
         ];
 
