@@ -6,35 +6,136 @@
     <title>Βρείτε τη λέξη</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        .search-container { display: flex; justify-content: center; gap: 10px; }
-        .search-item { padding: 10px; background: #ADD8E6; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .search-container { display: grid; grid-template-columns: repeat(10, 40px); gap: 5px; justify-content: center; }
+        .search-item { width: 40px; height: 40px; background: #ADD8E6; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; justify-content: center; align-items: center; }
+        .found { background: green; color: white; font-weight: bold; cursor: not-allowed; }
+        .timer { font-size: 20px; font-weight: bold; color: red; }
         .correct { color: green; font-weight: bold; }
+        .incorrect { color: red; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <h1>Βρείτε τη λέξη</h1>
     <p>Βρείτε τη λέξη: <strong>ΙΧΘΥΣ</strong></p>
-    <div class="search-container">
-        <div class="search-item" onclick="checkWord(this)">Ι</div>
-        <div class="search-item" onclick="checkWord(this)">Χ</div>
-        <div class="search-item" onclick="checkWord(this)">Θ</div>
-        <div class="search-item" onclick="checkWord(this)">Υ</div>
-        <div class="search-item" onclick="checkWord(this)">Σ</div>
-    </div>
+    <div class="search-container" id="searchGrid"></div>
     <p id="wordResult"></p>
+    <p class="timer" id="timer">Χρόνος: 30</p>
+    <br>
+    <button onclick="window.location.href = 'index.html';">Επιστροφή στη λίστα παιχνιδιών</button>
 
     <script>
-        function checkWord(element) {
-            let correctWord = "ΙΧΘΥΣ";
-            let wordResult = document.getElementById("wordResult");
-            if (correctWord.includes(element.innerText)) {
-                element.style.background = "green";
-                wordResult.innerHTML = "<span class='correct'>Σωστό!</span>";
-            } else {
-                element.style.background = "red";
+        // الكلمات التي سنبحث عنها
+        const words = ['ΙΧΘΥΣ', 'ΑΓΙΟΣ', 'ΛΟΓΟΣ'];
+        const gridSize = 10; // حجم الشبكة 10x10
+
+        let timerInterval;
+        let timeLeft = 30;
+        let wordResult = document.getElementById("wordResult");
+        let timerDisplay = document.getElementById("timer");
+
+        // شبكة اللعبة
+        let grid = [];
+
+        function createGrid() {
+            grid = [];
+            let gridContainer = document.getElementById("searchGrid");
+            gridContainer.innerHTML = '';
+            for (let i = 0; i < gridSize; i++) {
+                grid[i] = [];
+                for (let j = 0; j < gridSize; j++) {
+                    grid[i][j] = '';
+                    let cell = document.createElement('div');
+                    cell.classList.add('search-item');
+                    cell.setAttribute('data-x', i);
+                    cell.setAttribute('data-y', j);
+                    cell.addEventListener('click', () => checkWord(cell));
+                    gridContainer.appendChild(cell);
+                }
+            }
+            placeWords();
+        }
+
+        function placeWords() {
+            words.forEach(word => {
+                let placed = false;
+                while (!placed) {
+                    // اختيار موقع عشوائي للكلمة
+                    let dir = Math.floor(Math.random() * 3); // عمودي، أفقي، قطري
+                    let row = Math.floor(Math.random() * gridSize);
+                    let col = Math.floor(Math.random() * gridSize);
+                    
+                    // التحقق إذا كان بإمكاننا وضع الكلمة في المكان المختار
+                    if (canPlaceWord(word, row, col, dir)) {
+                        placed = true;
+                        for (let i = 0; i < word.length; i++) {
+                            if (dir === 0) { // أفقي
+                                grid[row][col + i] = word[i];
+                                document.querySelector(`[data-x="${row}"][data-y="${col + i}"]`).innerText = word[i];
+                            } else if (dir === 1) { // عمودي
+                                grid[row + i][col] = word[i];
+                                document.querySelector(`[data-x="${row + i}"][data-y="${col}"]`).innerText = word[i];
+                            } else { // قطري
+                                grid[row + i][col + i] = word[i];
+                                document.querySelector(`[data-x="${row + i}"][data-y="${col + i}"]`).innerText = word[i];
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function canPlaceWord(word, row, col, dir) {
+            if (dir === 0) { // أفقي
+                if (col + word.length > gridSize) return false;
+                for (let i = 0; i < word.length; i++) {
+                    if (grid[row][col + i] !== '') return false;
+                }
+            } else if (dir === 1) { // عمودي
+                if (row + word.length > gridSize) return false;
+                for (let i = 0; i < word.length; i++) {
+                    if (grid[row + i][col] !== '') return false;
+                }
+            } else { // قطري
+                if (row + word.length > gridSize || col + word.length > gridSize) return false;
+                for (let i = 0; i < word.length; i++) {
+                    if (grid[row + i][col + i] !== '') return false;
+                }
+            }
+            return true;
+        }
+
+        function checkWord(cell) {
+            if (cell.classList.contains('found')) return;
+            
+            let word = cell.innerText;
+            if (word !== '') {
+                cell.classList.add('found');
+                if (checkAllFound()) {
+                    wordResult.innerHTML = "<span class='correct'>Συγχαρητήρια! Βρήκατε όλες τις λέξεις!</span>";
+                }
             }
         }
+
+        function checkAllFound() {
+            const foundCells = document.querySelectorAll('.found');
+            const totalCells = document.querySelectorAll('.search-item').length;
+            return foundCells.length === totalCells;
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.innerText = `Χρόνος: ${timeLeft}`;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    wordResult.innerHTML = "<span class='incorrect'>Ο χρόνος εξαντλήθηκε! Παίξτε ξανά.</span>";
+                }
+            }, 1000);
+        }
+
+        createGrid();
+        startTimer();
     </script>
 
 </body>
