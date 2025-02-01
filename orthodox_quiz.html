@@ -149,7 +149,7 @@
             const question = questions[currentQuestionIndex];
             const result = document.getElementById("result");
 
-            // Use trim() to remove any extra spaces and compare the answers accurately
+            // Check if the answer is correct
             if (answer.trim() === question.correctAnswer.trim()) {
                 result.innerHTML = "<span class='correct'>Σωστό!</span>";
                 score++; // Increase score for correct answer
