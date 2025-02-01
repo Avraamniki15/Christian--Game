@@ -81,6 +81,23 @@
             color: #555;
         }
 
+        /* Στυλ για το κουμπί επιστροφής */
+        .back-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #45a049;
+        }
+
         /* Αντιμετώπιση μικρών οθονών */
         @media (max-width: 600px) {
             #quiz-container {
@@ -93,37 +110,21 @@
                 padding: 12px;
             }
         }
-
-        /* Στυλ για το κουμπί επιστροφής */
-        #back-button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #f44336;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        #back-button:hover {
-            background-color: #e53935;
-        }
     </style>
 </head>
 <body>
     <div id="quiz-container">
         <h2 id="question">Ερώτηση</h2>
         <div id="buttons-container">
-            <button onclick="checkAnswer(event)">Επιλογή 1</button>
-            <button onclick="checkAnswer(event)">Επιλογή 2</button>
-            <button onclick="checkAnswer(event)">Επιλογή 3</button>
+            <button onclick="checkAnswer(this.innerText, this)">Επιλογή 1</button>
+            <button onclick="checkAnswer(this.innerText, this)">Επιλογή 2</button>
+            <button onclick="checkAnswer(this.innerText, this)">Επιλογή 3</button>
         </div>
         <p id="result"></p>
         <p id="correct-answer"></p>
 
         <!-- Κουμπί επιστροφής στην αρχική λίστα παιχνιδιών -->
-        <button id="back-button" onclick="window.location.href = 'index.html';">Επιστροφή στην αρχική λίστα</button>
+        <button class="back-button" onclick="window.location.href='index.html'">Επιστροφή στην αρχική λίστα παιχνιδιών</button>
     </div>
 
     <script>
@@ -216,8 +217,7 @@
             document.getElementById("correct-answer").innerText = "";
         }
 
-        function checkAnswer(event) {
-            let answer = event.target.innerText; // Get the text of the clicked button
+        function checkAnswer(answer, button) {
             let result = document.getElementById("result");
             let correctAnswerText = document.getElementById("correct-answer");
 
@@ -226,10 +226,10 @@
 
             if (answer === question.correctAnswer) {
                 result.innerHTML = "<span class='correct'>Σωστό!</span>";
-                event.target.classList.add("correct"); // Set green color
+                button.classList.add("correct"); // Set green color
             } else {
                 result.innerHTML = "<span class='incorrect'>Λάθος!</span>";
-                event.target.classList.add("incorrect"); // Set red color
+                button.classList.add("incorrect"); // Set red color
                 // Show correct answer after wrong answer
                 correctAnswerText.innerHTML = "Η σωστή απάντηση είναι: " + question.correctAnswer;
             }
