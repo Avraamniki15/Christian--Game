@@ -6,7 +6,7 @@
     <title>Βρείτε τη λέξη</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        .search-container { display: grid; grid-template-columns: repeat(10, 40px); gap: 5px; justify-content: center; }
+        .search-container { display: grid; grid-template-columns: repeat(6, 40px); gap: 5px; justify-content: center; }
         .search-item { width: 40px; height: 40px; background: #ADD8E6; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; justify-content: center; align-items: center; }
         .found { background: green; color: white; font-weight: bold; cursor: not-allowed; }
         .timer { font-size: 20px; font-weight: bold; color: red; }
@@ -28,7 +28,7 @@
 
     <script>
         const christianWords = ['ΙΧΘΥΣ', 'ΑΓΙΟΣ', 'ΛΟΓΟΣ', 'ΧΡΙΣΤΟΣ', 'ΕΥΧΗ', 'ΕΥΑΓΓΕΛΙΟ', 'ΑΓΙΑΣΜΟΣ', 'ΣΤΑΥΡΟΣ']; // Χριστιανικές λέξεις
-        const gridSize = 10; // Μέγεθος πίνακα 10x10
+        const gridSize = 6; // Μέγεθος πίνακα 6x6
         const alphabet = 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ'; // Ελληνικό αλφάβητο
         let grid = [];
         let currentWord = '';
@@ -37,6 +37,8 @@
         let score = 0; // Αρχικό σκορ
         let wordsFound = 0; // Αριθμός λέξεων που βρέθηκαν
         let wordFound = false; // Έλεγχος αν η λέξη έχει βρεθεί
+        let currentWordPositions = []; // Θέσεις της λέξης στον πίνακα
+        let selectedLetters = []; // Αποθήκευση των επιλεγμένων γραμμάτων
 
         // Επιλογή τυχαίας λέξης
         function getRandomWord() {
@@ -48,6 +50,8 @@
             currentWord = getRandomWord(); // Επιλογή τυχαίας λέξης
             document.querySelector('p').innerHTML = `Βρείτε την λέξη: <strong>${currentWord}</strong>`;
             grid = [];
+            currentWordPositions = [];
+            selectedLetters = [];
             let gridContainer = document.getElementById("searchGrid");
             gridContainer.innerHTML = '';
             for (let i = 0; i < gridSize; i++) {
@@ -83,12 +87,15 @@
                         if (dir === 0) { // Οριζόντια
                             grid[row][col + i] = word[i];
                             document.querySelector(`[data-x="${row}"][data-y="${col + i}"]`).innerText = word[i];
+                            currentWordPositions.push([row, col + i]); // Αποθήκευση της θέσης
                         } else if (dir === 1) { // Κάθετη
                             grid[row + i][col] = word[i];
                             document.querySelector(`[data-x="${row + i}"][data-y="${col}"]`).innerText = word[i];
+                            currentWordPositions.push([row + i, col]); // Αποθήκευση της θέσης
                         } else { // Διαγώνια
                             grid[row + i][col + i] = word[i];
                             document.querySelector(`[data-x="${row + i}"][data-y="${col + i}"]`).innerText = word[i];
+                            currentWordPositions.push([row + i, col + i]); // Αποθήκευση της θέσης
                         }
                     }
                 }
@@ -135,14 +142,41 @@
 
             let word = cell.innerText;
             if (word !== '') {
-                cell.classList.add('found');
-                wordsFound++; // Αύξηση του αριθμού των λέξεων που βρέθηκαν
-                if (wordsFound === currentWord.length) {
-                    score++; // Αύξηση σκορ
-                    document.getElementById("score").innerText = `Σκορ: ${score}`; // Ενημέρωση σκορ
-                    wordFound = true; // Η λέξη βρέθηκε
-                    document.getElementById("wordResult").innerHTML = "<span class='correct'>Συγχαρητήρια! Βρήκατε την λέξη!</span>";
-                    setTimeout(nextRound, 2000); // Πέρασμα στον επόμενο γύρο μετά από 2 δευτερόλεπτα
+                selectedLetters.push(cell); // Προσθήκη του επιλεγμένου γράμματος
+
+                // Έλεγχος αν τα επιλεγμένα γράμματα είναι στην σωστή σειρά
+                if (selectedLetters.length === currentWord.length) {
+                    let isCorrect = true;
+                    for (let i = 0; i < selectedLetters.length; i++) {
+                        if (selectedLetters[i].innerText !== currentWord[i] || 
+                            selectedLetters[i].getAttribute('data-x') !== currentWordPositions[i][0] || 
+                            selectedLetters[i].getAttribute('data-y') !== currentWordPositions[i][1]) {
+                            isCorrect = false;
+                            break;
+                        }
+                    }
+
+                    if (isCorrect) {
+                        // Εάν είναι σωστή η λέξη
+                        selectedLetters.forEach(letter => {
+                            letter.classList.add('found'); // Σήμανση των γραμμάτων ως βρεθέντα
+                        });
+                        score++; // Αύξηση σκορ
+                        document.getElementById("score").innerText = `Σκορ: ${score}`; // Ενημέρωση σκορ
+                        wordFound = true; // Η λέξη βρέθηκε
+                        document.getElementById("wordResult").innerHTML = "<span class='correct'>Συγχαρητήρια! Βρήκατε την λέξη!</span>";
+                        setTimeout(nextRound, 2000); // Πέρασμα στον επόμενο γύρο μετά από 2 δευτερόλεπτα
+                    } else {
+                        selectedLetters.forEach(letter => {
+                            letter.classList.add('incorrect'); // Σήμανση των επιλεγμένων γραμμάτων ως λανθασμένων
+                        });
+                        setTimeout(() => {
+                            selectedLetters.forEach(letter => {
+                                letter.classList.remove('incorrect');
+                            });
+                            selectedLetters = [];
+                        }, 1500);
+                    }
                 }
             }
         }
