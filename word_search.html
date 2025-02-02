@@ -11,6 +11,7 @@
         .search-item { width: 50px; height: 50px; background: #ADD8E6; border-radius: 8px; font-weight: bold; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 20px; border: 2px solid #0077cc; }
         .selected { background: orange; }
         .found { background: green; color: white; }
+        .incorrect { background: red !important; color: white; }
         .timer { font-size: 22px; font-weight: bold; color: red; margin-top: 10px; }
         .score { font-size: 20px; font-weight: bold; margin-top: 10px; }
         button { padding: 10px 15px; font-size: 16px; margin-top: 10px; background-color: #0077cc; color: white; border: none; border-radius: 5px; cursor: pointer; }
@@ -154,26 +155,26 @@
                 document.getElementById("score").innerText = `Σκορ: ${score}`;
                 setTimeout(nextRound, 2000);
             } else {
-                selectedCells.forEach(cell => cell.classList.remove('selected'));
+                alert("Λάθος! Το παιχνίδι ξεκινάει από την αρχή.");
+                restartGame();
             }
-            selectedCells = [];
         }
 
-        function nextRound() {
-            timeLeft = 50;
-            document.getElementById("timer").innerText = `Χρόνος: ${timeLeft}`;
+        function restartGame() {
+            score = 0;
+            document.getElementById("score").innerText = `Σκορ: ${score}`;
+            usedWords = [];
+            clearInterval(timerInterval);
             createGrid();
+            startTimer();
         }
 
         function startTimer() {
+            timeLeft = 50;
+            document.getElementById("timer").innerText = `Χρόνος: ${timeLeft}`;
             timerInterval = setInterval(() => {
                 timeLeft--;
                 document.getElementById("timer").innerText = `Χρόνος: ${timeLeft}`;
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    alert(`Ο χρόνος τελείωσε! Σκορ: ${score}`);
-                    location.reload();
-                }
             }, 1000);
         }
 
