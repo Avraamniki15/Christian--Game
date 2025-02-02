@@ -22,6 +22,7 @@
         }
         .found { background: green; color: white; font-weight: bold; }
         .incorrect { background: red; color: white; }
+        .selected { background: orange; color: white; font-weight: bold; }
         .timer { font-size: 20px; font-weight: bold; color: red; margin-top: 10px; }
         .message { font-size: 20px; font-weight: bold; margin-top: 20px; }
         .button { 
@@ -145,19 +146,32 @@
 
         // Επιλογή γράμματος
         function selectLetter(cell) {
-            if (cell.classList.contains('found')) return;
+            if (cell.classList.contains('found') || selectedLetters.length >= currentWord.length) return;
             let letter = cell.innerText;
-            if (selectedLetters.length < currentWord.length) {
-                selectedLetters.push(letter);
-                cell.classList.add('found');
-                if (selectedLetters.join('') === currentWord) {
-                    score++;
-                    document.getElementById("score").innerText = `Σκορ: ${score}`;
-                    setTimeout(nextRound, 1000);
-                } else if (selectedLetters.length === currentWord.length) {
-                    document.getElementById("message").innerText = "Λάθος! Ξεκινάμε από την αρχή!";
-                    setTimeout(startGame, 2000);
-                }
+            cell.classList.add('selected'); // Κάνουμε το γράμμα πορτοκαλί
+
+            selectedLetters.push(letter);
+            if (selectedLetters.join('') === currentWord) {
+                // Αν η λέξη είναι σωστή
+                document.querySelectorAll('.selected').forEach(cell => {
+                    cell.classList.add('found'); // Κάνουμε τη λέξη πράσινη
+                    cell.classList.remove('selected');
+                });
+                score++;
+                document.getElementById("score").innerText = `Σκορ: ${score}`;
+                setTimeout(nextRound, 1000); // Προχωράμε στην επόμενη λέξη
+            } else if (selectedLetters.length === currentWord.length) {
+                // Αν η λέξη είναι λάθος
+                document.querySelectorAll('.selected').forEach(cell => {
+                    cell.classList.add('incorrect'); // Κάνουμε τα λάθος γράμματα κόκκινα
+                    cell.classList.remove('selected');
+                });
+                setTimeout(() => {
+                    document.querySelectorAll('.incorrect').forEach(cell => {
+                        cell.classList.remove('incorrect');
+                    });
+                    selectedLetters = [];
+                }, 1500); // Επαναφορά και ξεκινάμε από την αρχή
             }
         }
 
