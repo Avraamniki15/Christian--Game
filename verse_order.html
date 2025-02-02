@@ -205,30 +205,51 @@
         // Ελέγχει αν η σειρά των λέξεων είναι σωστή
         function checkAnswer() {
             const correctOrder = verses[currentIndex];
-            const droppedWords = [];
+            let droppedWords = [];
 
-            for (let i = 0; i < currentVerse.length; i++) {
+            for (let i = 0; i < correctOrder.length; i++) {
                 let dropArea = document.getElementById("drop" + i);
                 if (dropArea.hasChildNodes()) {
-                    droppedWords.push(dropArea.firstChild.innerText);
+                    droppedWords.push(dropArea.firstChild.innerText.trim());  // Αφαίρεση επιπλέον κενών
                 } else {
                     droppedWords.push(null);
                 }
-            }
+    }
 
-            // Αν οι λέξεις τοποθετήθηκαν σωστά
-            if (JSON.stringify(droppedWords) === JSON.stringify(correctOrder)) {
-                score++;
-                document.getElementById("verseResult").innerHTML = "Σωστά!";
-                document.getElementById("verseResult").classList.add("correct");
-                document.getElementById("score").innerText = score;
+    console.log("Dropped Words:", droppedWords);
+    console.log("Correct Order:", correctOrder);
 
-                setTimeout(selectRandomVerse, 2000); // Προχωρά στην επόμενη πρόταση
-            } else {
-                document.getElementById("verseResult").innerHTML = "Δοκιμάστε ξανά.";
-                document.getElementById("verseResult").classList.remove("correct");
-                document.getElementById("resetBtn").style.display = "inline-block";
-            }
+    // Έλεγχος αν όλες οι λέξεις έχουν τοποθετηθεί
+    if (droppedWords.includes(null)) {
+        document.getElementById("verseResult").innerHTML = "Τοποθετήστε όλες τις λέξεις.";
+        return;
+    }
+
+        // Έλεγχος αν η σειρά είναι σωστή
+    if (JSON.stringify(droppedWords) === JSON.stringify(correctOrder)) {
+        score++;
+        document.getElementById("verseResult").innerHTML = "Σωστά!";
+        document.getElementById("verseResult").classList.add("correct");
+        document.getElementById("score").innerText = score;
+
+        setTimeout(() => {
+            clearGameBoard(); // Καθαρίζουμε τις λέξεις
+            selectRandomVerse(); // Προχωράμε στην επόμενη ερώτηση
+        }, 2000);
+    } else {
+        document.getElementById("verseResult").innerHTML = "Δοκιμάστε ξανά.";
+        document.getElementById("verseResult").classList.remove("correct");
+        document.getElementById("resetBtn").style.display = "inline-block";
+    }
+}
+
+        // Συνάρτηση για καθαρισμό του πίνακα πριν την επόμενη ερώτηση
+      function clearGameBoard() {
+          document.getElementById("verse-container").innerHTML = "";
+          document.getElementById("drop-container").innerHTML = "";
+          document.getElementById("verseResult").innerHTML = "";
+}
+
         }
 
         // Επαναφορά των λέξεων στις αρχικές θέσεις
