@@ -20,10 +20,11 @@
         }
 
         .verse-container {
-            display: flex;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(4, 90px); /* Δημιουργεί 4 στήλες με πλάτος 90px για τις λέξεις */
             gap: 10px;
             margin-bottom: 20px;
+            justify-content: center;  /* Ευθυγράμμιση των λέξεων στο κέντρο */
         }
 
         .verse-word {
@@ -34,7 +35,6 @@
             font-weight: bold;
             display: inline-block;
             user-select: none;
-            width: 90px; /* Μειώσαμε το πλάτος των λέξεων */
             text-align: center;
         }
 
