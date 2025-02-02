@@ -42,6 +42,7 @@
         }
 
         function createGrid() {
+            clearGrid(); // Καθαρίζει την προηγούμενη λέξη και τον πίνακα
             currentWord = getRandomWord();
             document.getElementById("wordToFind").innerText = `Λέξη: ${currentWord}`;
             grid = Array.from({ length: gridSize }, () => Array(gridSize).fill(''));
@@ -64,6 +65,12 @@
 
             placeWord();
             fillEmptySpaces();
+        }
+
+        function clearGrid() {
+            document.getElementById("wordResult").innerText = "";
+            wordPositions = [];
+            selectedCells = [];
         }
 
         function placeWord() {
