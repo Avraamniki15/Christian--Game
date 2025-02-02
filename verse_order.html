@@ -31,8 +31,7 @@
             cursor: grab;
             font-weight: bold;
             display: inline-block;
-            user-select: none; /* Αποτρέπει επιλογή κειμένου */
-            transition: none; /* Καμία καθυστέρηση */
+            user-select: none;
         }
 
         .verse-word:active {
@@ -105,7 +104,7 @@
     <p id="verseResult"></p>
     <p>Σκορ: <span id="score">0</span></p>
 
-    <button id="returnBtn" onclick="goBack()">Επιστροφή στην Αρχική Λίστα Παιχνιδιών</button>
+    <button id="returnBtn" onclick="goBack()">Επιστροφή στην Αρχική Οθόνη</button>
     <button id="resetBtn" onclick="resetGame()">Προσπάθησε Ξανά</button>
 
     <script>
@@ -179,7 +178,7 @@
 
         function drag(ev) {
             ev.dataTransfer.setData("text", ev.target.id);
-            setTimeout(() => ev.target.style.opacity = "0.5", 0); // Κάνει το drag πιο φυσικό
+            setTimeout(() => ev.target.style.opacity = "0.5", 0);
         }
 
         function drop(ev) {
@@ -190,7 +189,7 @@
 
             if (!target.hasChildNodes()) {
                 target.appendChild(draggedElement);
-                draggedElement.style.opacity = "1"; // Επαναφορά ορατότητας
+                draggedElement.style.opacity = "1";
             }
 
             checkAnswer();
@@ -223,6 +222,10 @@
                 document.getElementById("verseResult").innerHTML = "Λάθος! Δοκιμάστε ξανά.";
                 document.getElementById("resetBtn").style.display = "inline-block";
             }
+        }
+
+        function resetGame() {
+            displayVerse();
         }
 
         function clearGameBoard() {
