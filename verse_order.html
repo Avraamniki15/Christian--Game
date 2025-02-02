@@ -31,7 +31,12 @@
             cursor: grab;
             font-weight: bold;
             display: inline-block;
-            transition: transform 0.2s;
+            user-select: none; /* Αποτρέπει επιλογή κειμένου */
+            transition: none; /* Καμία καθυστέρηση */
+        }
+
+        .verse-word:active {
+            cursor: grabbing;
         }
 
         .correct {
@@ -84,7 +89,6 @@
             background-color: #FF4500;
         }
 
-        /* Κρύβουμε το κουμπί επαναφοράς στην αρχή */
         #resetBtn {
             display: none;
         }
@@ -101,7 +105,7 @@
     <p id="verseResult"></p>
     <p>Σκορ: <span id="score">0</span></p>
 
-    <button id="returnBtn" onclick="goBack()">Επιστροφή στην Αρχική Οθόνη</button>
+    <button id="returnBtn" onclick="goBack()">Επιστροφή στην Αρχική Λίστα Παιχνιδιών</button>
     <button id="resetBtn" onclick="resetGame()">Προσπάθησε Ξανά</button>
 
     <script>
@@ -175,6 +179,7 @@
 
         function drag(ev) {
             ev.dataTransfer.setData("text", ev.target.id);
+            setTimeout(() => ev.target.style.opacity = "0.5", 0); // Κάνει το drag πιο φυσικό
         }
 
         function drop(ev) {
@@ -185,6 +190,7 @@
 
             if (!target.hasChildNodes()) {
                 target.appendChild(draggedElement);
+                draggedElement.style.opacity = "1"; // Επαναφορά ορατότητας
             }
 
             checkAnswer();
@@ -200,14 +206,13 @@
             }
 
             if (droppedWords.includes(null)) {
-                document.getElementById("verseResult").innerHTML = "Τοποθετήστε όλες τις λέξεις στη σωστή σειρά.";
+                document.getElementById("verseResult").innerHTML = "Τοποθετήστε όλες τις λέξεις.";
                 return;
             }
 
             if (JSON.stringify(droppedWords) === JSON.stringify(correctOrder)) {
                 score++;
                 document.getElementById("verseResult").innerHTML = "Σωστά!";
-                document.getElementById("verseResult").classList.add("correct");
                 document.getElementById("score").innerText = score;
 
                 setTimeout(() => {
@@ -215,7 +220,7 @@
                     selectRandomVerse();
                 }, 2000);
             } else {
-                document.getElementById("verseResult").innerHTML = "Λάθος σειρά! Δοκιμάστε ξανά.";
+                document.getElementById("verseResult").innerHTML = "Λάθος! Δοκιμάστε ξανά.";
                 document.getElementById("resetBtn").style.display = "inline-block";
             }
         }
@@ -224,12 +229,6 @@
             document.getElementById("verse-container").innerHTML = "";
             document.getElementById("drop-container").innerHTML = "";
             document.getElementById("verseResult").innerHTML = "";
-        }
-
-        function resetGame() {
-            const dropAreas = document.querySelectorAll('.drop-area');
-            dropAreas.forEach(area => area.innerHTML = '');
-            displayVerse();
         }
 
         function goBack() {
