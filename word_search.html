@@ -5,8 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Βρείτε τη λέξη</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f9f9f9; }
-        h1 { color: #333; }
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            padding: 20px; 
+            background-color: #f9f9f9; 
+            margin: 0;
+        }
+        h1 { 
+            color: #333; 
+            font-size: 24px;
+        }
         .search-container { 
             display: grid; 
             grid-template-columns: repeat(6, 50px); 
@@ -29,6 +38,28 @@
             margin-top: 20px; padding: 10px 20px; font-size: 16px; 
             background: blue; color: white; border: none; cursor: pointer; 
             border-radius: 5px;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 600px) {
+            .search-container {
+                grid-template-columns: repeat(5, 50px); /* Μειώνουμε τον αριθμό των στηλών */
+            }
+            .search-item {
+                width: 45px;
+                height: 45px;
+                font-size: 18px; /* Μειώνουμε το μέγεθος της γραμματοσειράς */
+            }
+            h1 {
+                font-size: 20px; /* Μειώνουμε το μέγεθος του τίτλου */
+            }
+            .timer, .message, #score {
+                font-size: 18px; /* Μειώνουμε το μέγεθος του κειμένου */
+            }
+            .button {
+                padding: 8px 16px; 
+                font-size: 14px; /* Μειώνουμε το μέγεθος του κουμπιού */
+            }
         }
     </style>
 </head>
