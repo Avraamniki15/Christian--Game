@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Βρείτε τη λέξη</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f4; }
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f9f9f9; }
         h1 { color: #333; }
         .search-container { 
             display: grid; 
@@ -18,13 +18,12 @@
             width: 50px; height: 50px; background: #ADD8E6; 
             border-radius: 8px; cursor: pointer; font-weight: bold; 
             display: flex; justify-content: center; align-items: center; 
-            font-size: 20px; 
+            font-size: 20px;
         }
         .found { background: green; color: white; font-weight: bold; }
         .incorrect { background: red; color: white; }
         .timer { font-size: 20px; font-weight: bold; color: red; margin-top: 10px; }
         .message { font-size: 20px; font-weight: bold; margin-top: 20px; }
-        .hidden { display: none; }
         .button { 
             margin-top: 20px; padding: 10px 20px; font-size: 16px; 
             background: blue; color: white; border: none; cursor: pointer; 
@@ -54,6 +53,7 @@
         let score = 0; 
         let selectedLetters = [];
 
+        // Ξεκινά το παιχνίδι
         function startGame() {
             score = 0;
             wordsUsed = [];
@@ -62,6 +62,7 @@
             nextRound();
         }
 
+        // Επόμενος γύρος
         function nextRound() {
             if (wordsUsed.length >= christianWords.length) {
                 document.getElementById("message").innerText = "Τέλος παιχνιδιού! Συγχαρητήρια!";
@@ -73,6 +74,7 @@
             createGrid();
         }
 
+        // Επιλέγει μια τυχαία λέξη που δεν έχει χρησιμοποιηθεί
         function getRandomWord() {
             let availableWords = christianWords.filter(word => !wordsUsed.includes(word));
             if (availableWords.length === 0) return null;
@@ -81,6 +83,7 @@
             return word;
         }
 
+        // Δημιουργία του πίνακα
         function createGrid() {
             currentWord = getRandomWord();
             if (!currentWord) return;
@@ -105,6 +108,7 @@
             fillEmptySpaces();
         }
 
+        // Τοποθετεί τη λέξη στον πίνακα
         function placeWord(word) {
             let placed = false;
             while (!placed) {
@@ -126,6 +130,7 @@
             }
         }
 
+        // Γεμίζει τα κενά με τυχαία γράμματα
         function fillEmptySpaces() {
             for (let i = 0; i < gridSize; i++) {
                 for (let j = 0; j < gridSize; j++) {
@@ -138,6 +143,7 @@
             }
         }
 
+        // Επιλογή γράμματος
         function selectLetter(cell) {
             if (cell.classList.contains('found')) return;
             let letter = cell.innerText;
@@ -155,6 +161,7 @@
             }
         }
 
+        // Χρονομέτρηση
         function startTimer() {
             timerInterval = setInterval(() => {
                 timeLeft--;
