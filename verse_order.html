@@ -76,7 +76,7 @@
         }
 
         #returnBtn {
-            background-color: #FF6347; /* Κόκκινο χρώμα για επιστροφή */
+            background-color: #FF6347;
             margin-top: 30px;
         }
 
@@ -84,32 +84,27 @@
             background-color: #FF4500;
         }
 
+        /* Κρύβουμε το κουμπί επαναφοράς στην αρχή */
+        #resetBtn {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
     <h1>Τακτοποιήστε το Εδάφιο</h1>
-    <p>Συρθείτε και τακτοποιήστε τις λέξεις στην σωστή σειρά:</p>
+    <p>Σύρετε και τακτοποιήστε τις λέξεις στη σωστή σειρά:</p>
 
-    <div class="verse-container" id="verse-container">
-        <!-- Οι λέξεις θα προστεθούν δυναμικά εδώ -->
-    </div>
-
-    <div class="drop-container" id="drop-container">
-        <!-- Οι περιοχές για τοποθέτηση των λέξεων θα προστεθούν δυναμικά εδώ -->
-    </div>
+    <div class="verse-container" id="verse-container"></div>
+    <div class="drop-container" id="drop-container"></div>
 
     <p id="verseResult"></p>
     <p>Σκορ: <span id="score">0</span></p>
 
-    <!-- Κουμπί Επιστροφής στην Αρχική Οθόνη -->
     <button id="returnBtn" onclick="goBack()">Επιστροφή στην Αρχική Οθόνη</button>
-
-    <!-- Κουμπί για προσπάθεια ξανά -->
     <button id="resetBtn" onclick="resetGame()">Προσπάθησε Ξανά</button>
 
     <script>
-        // Λίστα εδαφίων με λέξεις
         const verses = [
             ["Εν", "αρχή", "ήν", "ο", "Λόγος"], 
             ["Ο", "Θεός", "αγάπη", "είναι", "ο"], 
@@ -121,7 +116,6 @@
         let score = 0;
         let usedVerses = [];
 
-        // Επιλογή τυχαίου εδαφίου
         function selectRandomVerse() {
             if (usedVerses.length === verses.length) {
                 document.getElementById("verseResult").innerHTML = `Μπράβο! Τελείωσες το παιχνίδι! Σκορ: ${score}`;
@@ -129,17 +123,17 @@
                 return;
             }
 
-            let randomIndex = Math.floor(Math.random() * verses.length);
-            while (usedVerses.includes(randomIndex)) {
+            let randomIndex;
+            do {
                 randomIndex = Math.floor(Math.random() * verses.length);
-            }
+            } while (usedVerses.includes(randomIndex));
+
             currentIndex = randomIndex;
-            currentVerse = verses[randomIndex];
+            currentVerse = [...verses[randomIndex]];
             usedVerses.push(randomIndex);
             displayVerse();
         }
 
-        // Δείχνει τις λέξεις και τις περιοχές drop
         function displayVerse() {
             shuffleArray(currentVerse);
 
@@ -152,8 +146,7 @@
                 wordElement.id = `word${index}`;
                 wordElement.draggable = true;
                 wordElement.innerText = word;
-                wordElement.addEventListener('dragstart', function (ev) { drag(ev); });
-
+                wordElement.addEventListener('dragstart', drag);
                 document.getElementById('verse-container').appendChild(wordElement);
             });
 
@@ -161,16 +154,14 @@
                 const dropArea = document.createElement('div');
                 dropArea.classList.add('drop-area');
                 dropArea.id = `drop${index}`;
-                dropArea.addEventListener('drop', function (ev) { drop(ev); });
-                dropArea.addEventListener('dragover', function (ev) { allowDrop(ev); });
-
+                dropArea.addEventListener('drop', drop);
+                dropArea.addEventListener('dragover', allowDrop);
                 document.getElementById('drop-container').appendChild(dropArea);
             });
 
             document.getElementById("resetBtn").style.display = "none";
         }
 
-        // Λειτουργία για ανακάτεμα των λέξεων
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -178,17 +169,14 @@
             }
         }
 
-        // Επιτρέπει το drop
         function allowDrop(ev) {
             ev.preventDefault();
         }
 
-        // Σηκώνει το στοιχείο κατά το drag
         function drag(ev) {
             ev.dataTransfer.setData("text", ev.target.id);
         }
 
-        // Τοποθετεί τη λέξη στο σωστό drop area
         function drop(ev) {
             ev.preventDefault();
             var data = ev.dataTransfer.getData("text");
@@ -202,71 +190,52 @@
             checkAnswer();
         }
 
-        // Ελέγχει αν η σειρά των λέξεων είναι σωστή
         function checkAnswer() {
             const correctOrder = verses[currentIndex];
             let droppedWords = [];
 
             for (let i = 0; i < correctOrder.length; i++) {
                 let dropArea = document.getElementById("drop" + i);
-                if (dropArea.hasChildNodes()) {
-                    droppedWords.push(dropArea.firstChild.innerText.trim());  // Αφαίρεση επιπλέον κενών
-                } else {
-                    droppedWords.push(null);
-                }
-    }
+                droppedWords.push(dropArea.hasChildNodes() ? dropArea.firstChild.innerText.trim() : null);
+            }
 
-    console.log("Dropped Words:", droppedWords);
-    console.log("Correct Order:", correctOrder);
+            if (droppedWords.includes(null)) {
+                document.getElementById("verseResult").innerHTML = "Τοποθετήστε όλες τις λέξεις στη σωστή σειρά.";
+                return;
+            }
 
-    // Έλεγχος αν όλες οι λέξεις έχουν τοποθετηθεί
-    if (droppedWords.includes(null)) {
-        document.getElementById("verseResult").innerHTML = "Τοποθετήστε όλες τις λέξεις.";
-        return;
-    }
+            if (JSON.stringify(droppedWords) === JSON.stringify(correctOrder)) {
+                score++;
+                document.getElementById("verseResult").innerHTML = "Σωστά!";
+                document.getElementById("verseResult").classList.add("correct");
+                document.getElementById("score").innerText = score;
 
-        // Έλεγχος αν η σειρά είναι σωστή
-    if (JSON.stringify(droppedWords) === JSON.stringify(correctOrder)) {
-        score++;
-        document.getElementById("verseResult").innerHTML = "Σωστά!";
-        document.getElementById("verseResult").classList.add("correct");
-        document.getElementById("score").innerText = score;
-
-        setTimeout(() => {
-            clearGameBoard(); // Καθαρίζουμε τις λέξεις
-            selectRandomVerse(); // Προχωράμε στην επόμενη ερώτηση
-        }, 2000);
-    } else {
-        document.getElementById("verseResult").innerHTML = "Δοκιμάστε ξανά.";
-        document.getElementById("verseResult").classList.remove("correct");
-        document.getElementById("resetBtn").style.display = "inline-block";
-    }
-}
-
-        // Συνάρτηση για καθαρισμό του πίνακα πριν την επόμενη ερώτηση
-      function clearGameBoard() {
-          document.getElementById("verse-container").innerHTML = "";
-          document.getElementById("drop-container").innerHTML = "";
-          document.getElementById("verseResult").innerHTML = "";
-}
-
+                setTimeout(() => {
+                    clearGameBoard();
+                    selectRandomVerse();
+                }, 2000);
+            } else {
+                document.getElementById("verseResult").innerHTML = "Λάθος σειρά! Δοκιμάστε ξανά.";
+                document.getElementById("resetBtn").style.display = "inline-block";
+            }
         }
 
-        // Επαναφορά των λέξεων στις αρχικές θέσεις
+        function clearGameBoard() {
+            document.getElementById("verse-container").innerHTML = "";
+            document.getElementById("drop-container").innerHTML = "";
+            document.getElementById("verseResult").innerHTML = "";
+        }
+
         function resetGame() {
             const dropAreas = document.querySelectorAll('.drop-area');
-            dropAreas.forEach(area => {
-                area.innerHTML = '';
-            });
+            dropAreas.forEach(area => area.innerHTML = '');
             displayVerse();
         }
 
-        // Επιστροφή στην αρχική σελίδα
         function goBack() {
             window.location.href = "index.html";
         }
 
-        // Εκκίνηση του παιχνιδιού
         selectRandomVerse();
     </script>
 
