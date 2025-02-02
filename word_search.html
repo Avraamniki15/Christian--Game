@@ -5,17 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Βρείτε τη λέξη</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f4; }
-        h1 { color: #333; }
-        .search-container { display: grid; grid-template-columns: repeat(6, 50px); gap: 5px; justify-content: center; margin: 20px auto; }
-        .search-item { width: 50px; height: 50px; background: #ADD8E6; border-radius: 8px; font-weight: bold; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 20px; border: 2px solid #0077cc; }
-        .selected { background: orange; }
-        .found { background: green; color: white; }
-        .incorrect { background: red !important; color: white; }
-        .timer { font-size: 22px; font-weight: bold; color: red; margin-top: 10px; }
-        .score { font-size: 20px; font-weight: bold; margin-top: 10px; }
-        button { padding: 10px 15px; font-size: 16px; margin-top: 10px; background-color: #0077cc; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        button:hover { background-color: #005fa3; }
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f8f8f8; }
+        .search-container { display: grid; grid-template-columns: repeat(6, 50px); gap: 5px; justify-content: center; }
+        .search-item { width: 50px; height: 50px; background: #ADD8E6; border-radius: 8px; cursor: pointer; font-size: 20px; font-weight: bold; display: flex; justify-content: center; align-items: center; }
+        .found { background: green; color: white; cursor: not-allowed; }
+        .incorrect { background: red; color: white; }
+        .timer, #score, #wordResult { font-size: 22px; font-weight: bold; margin-top: 20px; }
+        .game-over { color: red; font-size: 24px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -23,40 +19,47 @@
     <h1>Βρείτε τη λέξη</h1>
     <p id="wordToFind"></p>
     <div class="search-container" id="searchGrid"></div>
+    <p id="wordResult"></p>
     <p class="timer" id="timer">Χρόνος: 50</p>
-    <p class="score" id="score">Σκορ: 0</p>
-    <button onclick="window.location.href = 'index.html';">Επιστροφή</button>
+    <p id="score">Σκορ: 0</p>
+    <br>
+    <button onclick="window.location.href = 'index.html';">Επιστροφή στη λίστα παιχνιδιών</button>
 
     <script>
-        const words = ['ΙΧΘΥΣ', 'ΑΓΙΟΣ', 'ΛΟΓΟΣ', 'ΧΡΙΣΤΟΣ', 'ΕΥΧΗ', 'ΕΥΑΓΓΕΛΙΟ', 'ΣΤΑΥΡΟΣ'];
-        const gridSize = 6;
-        const alphabet = 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ';
-        let grid = [];
+        const words = ['ΙΧΘΥΣ', 'ΑΓΙΟΣ', 'ΛΟΓΟΣ', 'ΧΡΙΣΤΟΣ', 'ΕΥΧΗ', 'ΕΥΑΓΓΕΛΙΟ', 'ΑΓΙΑΣΜΟΣ', 'ΣΤΑΥΡΟΣ']; 
+        let availableWords = [...words];
         let usedWords = [];
+        let gridSize = 6;
+        let alphabet = 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ';
+        let grid = [];
         let currentWord = '';
         let timeLeft = 50;
-        let score = 0;
-        let selectedCells = [];
-        let wordPositions = [];
         let timerInterval;
+        let score = 0;
+        let selectedLetters = [];
+        let wordPositions = [];
 
         function getRandomWord() {
-            let availableWords = words.filter(w => !usedWords.includes(w));
             if (availableWords.length === 0) {
-                usedWords = [];
-                availableWords = [...words];
+                document.getElementById("wordToFind").innerHTML = "<span class='game-over'>Το παιχνίδι τελείωσε! Σκορ: " + score + "</span>";
+                clearInterval(timerInterval);
+                return null;
             }
-            let newWord = availableWords[Math.floor(Math.random() * availableWords.length)];
-            usedWords.push(newWord);
-            return newWord;
+            let wordIndex = Math.floor(Math.random() * availableWords.length);
+            let word = availableWords[wordIndex];
+            availableWords.splice(wordIndex, 1); // Αφαιρούμε τη λέξη από τη λίστα
+            usedWords.push(word);
+            return word;
         }
 
         function createGrid() {
             currentWord = getRandomWord();
-            document.getElementById('wordToFind').innerHTML = `Βρείτε τη λέξη: <strong>${currentWord}</strong>`;
+            if (!currentWord) return;
+
+            document.getElementById("wordToFind").innerHTML = `Βρείτε την λέξη: <strong>${currentWord}</strong>`;
             grid = [];
             wordPositions = [];
-            selectedCells = [];
+            selectedLetters = [];
             let gridContainer = document.getElementById("searchGrid");
             gridContainer.innerHTML = '';
 
@@ -68,48 +71,42 @@
                     cell.classList.add('search-item');
                     cell.setAttribute('data-x', i);
                     cell.setAttribute('data-y', j);
-                    cell.addEventListener('click', () => selectLetter(cell));
+                    cell.addEventListener('click', () => checkWord(cell));
                     gridContainer.appendChild(cell);
                 }
             }
-            placeWord();
+
+            placeWord(currentWord);
             fillEmptySpaces();
         }
 
-        function placeWord() {
+        function placeWord(word) {
             let placed = false;
             while (!placed) {
-                let direction = Math.floor(Math.random() * 3);
+                let dir = Math.floor(Math.random() * 3);
                 let row = Math.floor(Math.random() * gridSize);
                 let col = Math.floor(Math.random() * gridSize);
 
-                if (canPlaceWord(currentWord, row, col, direction)) {
+                if (canPlaceWord(word, row, col, dir)) {
                     placed = true;
-                    for (let i = 0; i < currentWord.length; i++) {
-                        let x = row, y = col;
-                        if (direction === 0) y += i;
-                        else if (direction === 1) x += i;
-                        else { x += i; y += i; }
-
-                        grid[x][y] = currentWord[i];
-                        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerText = currentWord[i];
+                    for (let i = 0; i < word.length; i++) {
+                        let x = row + (dir === 1 ? i : 0);
+                        let y = col + (dir === 0 ? i : 0);
+                        grid[x][y] = word[i];
+                        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerText = word[i];
                         wordPositions.push([x, y]);
                     }
                 }
             }
         }
 
-        function canPlaceWord(word, row, col, direction) {
-            if (direction === 0 && col + word.length > gridSize) return false;
-            if (direction === 1 && row + word.length > gridSize) return false;
-            if (direction === 2 && (row + word.length > gridSize || col + word.length > gridSize)) return false;
+        function canPlaceWord(word, row, col, dir) {
+            if (dir === 0 && col + word.length > gridSize) return false;
+            if (dir === 1 && row + word.length > gridSize) return false;
 
             for (let i = 0; i < word.length; i++) {
-                let x = row, y = col;
-                if (direction === 0) y += i;
-                else if (direction === 1) x += i;
-                else { x += i; y += i; }
-
+                let x = row + (dir === 1 ? i : 0);
+                let y = col + (dir === 0 ? i : 0);
                 if (grid[x][y] !== '') return false;
             }
             return true;
@@ -127,59 +124,49 @@
             }
         }
 
-        function selectLetter(cell) {
+        function checkWord(cell) {
             if (cell.classList.contains('found')) return;
-            cell.classList.add('selected');
-            selectedCells.push(cell);
 
-            if (selectedCells.length === currentWord.length) {
-                checkWord();
-            }
-        }
+            selectedLetters.push(cell);
 
-        function checkWord() {
-            let correct = true;
-            for (let i = 0; i < selectedCells.length; i++) {
-                let x = selectedCells[i].getAttribute('data-x');
-                let y = selectedCells[i].getAttribute('data-y');
+            if (selectedLetters.length === currentWord.length) {
+                let correct = true;
+                for (let i = 0; i < selectedLetters.length; i++) {
+                    let [x, y] = wordPositions[i];
+                    if (selectedLetters[i].getAttribute('data-x') != x || selectedLetters[i].getAttribute('data-y') != y) {
+                        correct = false;
+                        break;
+                    }
+                }
 
-                if (x != wordPositions[i][0] || y != wordPositions[i][1]) {
-                    correct = false;
-                    break;
+                if (correct) {
+                    selectedLetters.forEach(letter => letter.classList.add('found'));
+                    score++;
+                    document.getElementById("score").innerText = `Σκορ: ${score}`;
+                    document.getElementById("wordResult").innerHTML = "<span style='color:green;'>Σωστό!</span>";
+                    setTimeout(nextRound, 2000);
+                } else {
+                    document.getElementById("wordResult").innerHTML = "<span style='color:red;'>Έχασες! Ξεκινάει νέα παρτίδα.</span>";
+                    setTimeout(resetGame, 2000);
                 }
             }
-
-            if (correct) {
-                selectedCells.forEach(cell => cell.classList.add('found'));
-                score++;
-                document.getElementById("score").innerText = `Σκορ: ${score}`;
-                setTimeout(nextRound, 2000);
-            } else {
-                alert("Λάθος! Το παιχνίδι ξεκινάει από την αρχή.");
-                restartGame();
-            }
         }
 
-        function restartGame() {
-            score = 0;
-            document.getElementById("score").innerText = `Σκορ: ${score}`;
-            usedWords = [];
-            clearInterval(timerInterval);
-            createGrid();
-            startTimer();
-        }
-
-        function startTimer() {
+        function nextRound() {
             timeLeft = 50;
             document.getElementById("timer").innerText = `Χρόνος: ${timeLeft}`;
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                document.getElementById("timer").innerText = `Χρόνος: ${timeLeft}`;
-            }, 1000);
+            createGrid();
+        }
+
+        function resetGame() {
+            availableWords = [...words];
+            usedWords = [];
+            score = 0;
+            document.getElementById("score").innerText = "Σκορ: 0";
+            createGrid();
         }
 
         createGrid();
-        startTimer();
     </script>
 
 </body>
