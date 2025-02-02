@@ -29,6 +29,7 @@
         const christianWords = ['ΙΧΘΥΣ', 'ΑΓΙΟΣ', 'ΛΟΓΟΣ', 'ΧΡΙΣΤΟΣ', 'ΕΥΧΗ', 'ΣΤΑΥΡΟΣ']; 
         const gridSize = 6; 
         const alphabet = 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ';
+        let usedWords = new Set(); 
         let grid = [];
         let currentWord = '';
         let timeLeft = 50;
@@ -38,11 +39,18 @@
         let selectedCells = [];
 
         function getRandomWord() {
-            return christianWords[Math.floor(Math.random() * christianWords.length)];
+            let availableWords = christianWords.filter(word => !usedWords.has(word));
+            if (availableWords.length === 0) {
+                usedWords.clear();  
+                availableWords = [...christianWords];
+            }
+            let word = availableWords[Math.floor(Math.random() * availableWords.length)];
+            usedWords.add(word);
+            return word;
         }
 
         function createGrid() {
-            clearGrid(); // Καθαρίζει την προηγούμενη λέξη και τον πίνακα
+            clearGrid();  
             currentWord = getRandomWord();
             document.getElementById("wordToFind").innerText = `Λέξη: ${currentWord}`;
             grid = Array.from({ length: gridSize }, () => Array(gridSize).fill(''));
