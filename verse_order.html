@@ -12,25 +12,11 @@
             background-color: #f9f9f9; 
         }
 
-        /* Ρυθμίσεις για την οθόνη κινητών */
-        @media (max-width: 768px) {
-            .verse-container, .drop-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            .verse-word, .drop-area {
-                width: 80%;
-                margin-bottom: 10px;
-            }
-        }
-
-        /* Ρυθμίσεις για μεγαλύτερες οθόνες */
         .verse-container { 
             display: flex; 
             justify-content: center; 
             gap: 10px; 
-            margin-bottom: 20px;
-            flex-wrap: wrap; /* Επιτρέπει τις λέξεις να μετακινούνται σε πολλές γραμμές */
+            margin-bottom: 20px; 
         }
         
         .verse-word { 
@@ -40,9 +26,9 @@
             cursor: grab; 
             font-weight: bold; 
             display: inline-block;
-            transition: transform 0.2s; /* Προσθήκη μετάβασης για drag */
+            transition: transform 0.2s; 
         }
-        
+
         .correct { 
             color: green; 
             font-weight: bold; 
@@ -56,7 +42,6 @@
             border: 2px solid #ddd; 
             border-radius: 8px;
             margin-bottom: 20px;
-            flex-wrap: wrap; /* Επιτρέπει τις περιοχές drop να τοποθετούνται σωστά */
         }
 
         .drop-area { 
@@ -67,7 +52,6 @@
             display: flex; 
             justify-content: center; 
             align-items: center;
-            margin-bottom: 10px; /* Κενό μεταξύ των περιοχών drop */
         }
 
         #resetBtn, #returnBtn { 
@@ -82,19 +66,6 @@
 
         #resetBtn:hover, #returnBtn:hover { 
             background-color: #45a049; 
-        }
-
-        /* Προσαρμογή για μικρότερες οθόνες */
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.5em;
-            }
-            .verse-container, .drop-container {
-                width: 100%;
-            }
-            .verse-word, .drop-area {
-                width: 90%;
-            }
         }
 
     </style>
@@ -115,15 +86,15 @@
     <p id="verseResult"></p>
     <p>Σκορ: <span id="score">0</span></p>
 
-    <button id="resetBtn" style="display: none;">Προσπάθησε Ξανά</button>
+    <button id="resetBtn" onclick="resetGame()">Προσπάθησε Ξανά</button>
     <button id="returnBtn" onclick="goBack()" style="display: none;">Επιστροφή στην Αρχική Οθόνη</button>
 
     <script>
         // Λίστα εδαφίων με λέξεις
         const verses = [
-            ["Εν", "αρχή", "ήν", "ο", "Λόγος"], // Παράδειγμα 1
-            ["Ο", "Θεός", "αγάπη", "είναι", "ο"], // Παράδειγμα 2
-            ["Ειρήνη", "ευλογία", "και", "χαρά", "είναι"], // Παράδειγμα 3
+            ["Εν", "αρχή", "ήν", "ο", "Λόγος"], 
+            ["Ο", "Θεός", "αγάπη", "είναι", "ο"], 
+            ["Ειρήνη", "ευλογία", "και", "χαρά", "είναι"]
         ];
 
         let currentVerse = [];
@@ -131,6 +102,7 @@
         let score = 0;
         let usedVerses = [];
 
+        // Επιλογή τυχαίου εδαφίου
         function selectRandomVerse() {
             if (usedVerses.length === verses.length) {
                 document.getElementById("verseResult").innerHTML = `Μπράβο! Τελείωσες το παιχνίδι! Σκορ: ${score}`;
@@ -139,7 +111,6 @@
                 return;
             }
 
-            // Επιλογή τυχαίου εδαφίου που δεν έχει ήδη χρησιμοποιηθεί
             let randomIndex = Math.floor(Math.random() * verses.length);
             while (usedVerses.includes(randomIndex)) {
                 randomIndex = Math.floor(Math.random() * verses.length);
@@ -150,15 +121,13 @@
             displayVerse();
         }
 
+        // Δείχνει τις λέξεις και τις περιοχές drop
         function displayVerse() {
-            // Ανακάτεμα των λέξεων της πρότασης
             shuffleArray(currentVerse);
 
-            // Εκκαθάριση των προηγούμενων λέξεων και περιοχών
             document.getElementById('verse-container').innerHTML = '';
             document.getElementById('drop-container').innerHTML = '';
 
-            // Δημιουργία λέξεων για drag-and-drop
             currentVerse.forEach((word, index) => {
                 const wordElement = document.createElement('div');
                 wordElement.classList.add('verse-word');
@@ -170,7 +139,6 @@
                 document.getElementById('verse-container').appendChild(wordElement);
             });
 
-            // Δημιουργία περιοχών drop
             currentVerse.forEach((_, index) => {
                 const dropArea = document.createElement('div');
                 dropArea.classList.add('drop-area');
@@ -181,33 +149,34 @@
                 document.getElementById('drop-container').appendChild(dropArea);
             });
 
-            // Εμφανίζει το κουμπί "Προσπάθησε Ξανά"
             document.getElementById("resetBtn").style.display = "none";
         }
 
-        // Λειτουργία για το ανακάτεμα των λέξεων
+        // Λειτουργία για ανακάτεμα των λέξεων
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]]; // Ανταλλαγή
+                [array[i], array[j]] = [array[j], array[i]];
             }
         }
 
+        // Επιτρέπει το drop
         function allowDrop(ev) {
             ev.preventDefault();
         }
 
+        // Σηκώνει το στοιχείο κατά το drag
         function drag(ev) {
             ev.dataTransfer.setData("text", ev.target.id);
         }
 
+        // Τοποθετεί τη λέξη στο σωστό drop area
         function drop(ev) {
             ev.preventDefault();
             var data = ev.dataTransfer.getData("text");
             var draggedElement = document.getElementById(data);
             var target = ev.target;
 
-            // Αν η περιοχή είναι κενή, τοποθετούμε τη λέξη
             if (!target.hasChildNodes()) {
                 target.appendChild(draggedElement);
             }
@@ -215,11 +184,11 @@
             checkAnswer();
         }
 
+        // Ελέγχει αν η σειρά των λέξεων είναι σωστή
         function checkAnswer() {
             const correctOrder = verses[currentIndex];
             const droppedWords = [];
 
-            // Συγκεντρώνει τις λέξεις που έχουν τοποθετηθεί
             for (let i = 0; i < currentVerse.length; i++) {
                 let dropArea = document.getElementById("drop" + i);
                 if (dropArea.hasChildNodes()) {
@@ -229,7 +198,6 @@
                 }
             }
 
-            // Ελέγχει αν η σειρά είναι σωστή
             if (JSON.stringify(droppedWords) === JSON.stringify(correctOrder)) {
                 score++;
                 document.getElementById("verseResult").innerHTML = "Σωστά!";
@@ -244,23 +212,21 @@
             }
         }
 
+        // Επαναφορά των λέξεων στις αρχικές θέσεις
         function resetGame() {
-            // Επαναφορά των λέξεων στις αρχικές θέσεις
             const dropAreas = document.querySelectorAll('.drop-area');
             dropAreas.forEach(area => {
-                area.innerHTML = ''; // Καθαρίζει την περιοχή
+                area.innerHTML = '';
             });
-
-            // Επαναφορά των λέξεων στην αρχική σειρά
             displayVerse();
         }
 
+        // Επιστροφή στην αρχική σελίδα
         function goBack() {
-            // Επιστροφή στην αρχική οθόνη ή λογική επανεκκίνησης
             window.location.href = "index.html";
         }
 
-        // Εκκίνηση του παιχνιδιού με την επιλογή ενός τυχαίου εδαφίου
+        // Εκκίνηση του παιχνιδιού
         selectRandomVerse();
     </script>
 
