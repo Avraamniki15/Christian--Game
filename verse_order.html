@@ -151,6 +151,9 @@
         }
 
         function displayVerse() {
+            // Ανακάτεμα των λέξεων της πρότασης
+            shuffleArray(currentVerse);
+
             // Εκκαθάριση των προηγούμενων λέξεων και περιοχών
             document.getElementById('verse-container').innerHTML = '';
             document.getElementById('drop-container').innerHTML = '';
@@ -182,6 +185,14 @@
             document.getElementById("resetBtn").style.display = "none";
         }
 
+        // Λειτουργία για το ανακάτεμα των λέξεων
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Ανταλλαγή
+            }
+        }
+
         function allowDrop(ev) {
             ev.preventDefault();
         }
@@ -205,7 +216,7 @@
         }
 
         function checkAnswer() {
-            const correctOrder = currentVerse;
+            const correctOrder = verses[currentIndex];
             const droppedWords = [];
 
             // Συγκεντρώνει τις λέξεις που έχουν τοποθετηθεί
@@ -246,7 +257,7 @@
 
         function goBack() {
             // Επιστροφή στην αρχική οθόνη ή λογική επανεκκίνησης
-            alert("Επιστρέφετε στην αρχική οθόνη.");
+            window.location.href = "index.html";
         }
 
         // Εκκίνηση του παιχνιδιού με την επιλογή ενός τυχαίου εδαφίου
