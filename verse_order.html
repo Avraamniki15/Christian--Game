@@ -3,76 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Τακτοποιήστε το εδάφιο</title>
+    <title>Τακτοποιήστε το Εδάφιο</title>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            text-align: center; 
-            padding: 20px; 
-            background-color: #f9f9f9; 
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background: linear-gradient(to right, #87CEFA, #FFD700);
+            padding: 20px;
         }
 
-        .verse-container { 
-            display: flex; 
-            justify-content: center; 
-            gap: 10px; 
-            margin-bottom: 20px; 
-        }
-        
-        .verse-word { 
-            padding: 10px; 
-            background: #ADD8E6; 
-            border-radius: 8px; 
-            cursor: grab; 
-            font-weight: bold; 
-            display: inline-block;
-            transition: transform 0.2s; 
+        h1 {
+            color: white;
+            text-shadow: 2px 2px 4px #000;
         }
 
-        .correct { 
-            color: green; 
-            font-weight: bold; 
+        .verse-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
-        .drop-container { 
-            display: flex; 
-            justify-content: center; 
-            gap: 10px; 
+        .verse-word {
             padding: 10px;
-            border: 2px solid #ddd; 
+            background: #ADD8E6;
+            border-radius: 8px;
+            cursor: grab;
+            font-weight: bold;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
+
+        .drop-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            border: 2px solid #ddd;
             border-radius: 8px;
             margin-bottom: 20px;
         }
 
-        .drop-area { 
-            width: 120px; height: 50px; 
-            background-color: #f0f0f0; 
-            border: 2px dashed #aaa; 
+        .drop-area {
+            width: 120px;
+            height: 50px;
+            background-color: #f0f0f0;
+            border: 2px dashed #aaa;
             border-radius: 5px;
-            display: flex; 
-            justify-content: center; 
+            display: flex;
+            justify-content: center;
             align-items: center;
         }
 
-        #resetBtn, #returnBtn { 
-            padding: 10px 20px; 
-            margin-top: 20px; 
+        #resetBtn, #returnBtn {
+            padding: 10px 20px;
+            margin-top: 20px;
             cursor: pointer;
-            background-color: #4CAF50; 
-            color: white; 
-            border: none; 
+            background-color: #4CAF50;
+            color: white;
+            border: none;
             border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        #resetBtn:hover, #returnBtn:hover { 
-            background-color: #45a049; 
+        #resetBtn:hover, #returnBtn:hover {
+            background-color: #45a049;
+        }
+
+        #returnBtn {
+            background-color: #FF6347; /* Κόκκινο χρώμα για επιστροφή */
+            margin-top: 30px;
+        }
+
+        #returnBtn:hover {
+            background-color: #FF4500;
         }
 
     </style>
 </head>
 <body>
 
-    <h1>Τακτοποιήστε το εδάφιο</h1>
+    <h1>Τακτοποιήστε το Εδάφιο</h1>
     <p>Συρθείτε και τακτοποιήστε τις λέξεις στην σωστή σειρά:</p>
 
     <div class="verse-container" id="verse-container">
