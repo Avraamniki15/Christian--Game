@@ -86,8 +86,11 @@
     <p id="verseResult"></p>
     <p>Σκορ: <span id="score">0</span></p>
 
+    <!-- Κουμπί Επιστροφής στην Αρχική Οθόνη -->
+    <button id="returnBtn" onclick="goBack()">Επιστροφή στην Αρχική Οθόνη</button>
+
+    <!-- Κουμπί για προσπάθεια ξανά -->
     <button id="resetBtn" onclick="resetGame()">Προσπάθησε Ξανά</button>
-    <button id="returnBtn" onclick="goBack()" style="display: none;">Επιστροφή στην Αρχική Οθόνη</button>
 
     <script>
         // Λίστα εδαφίων με λέξεις
@@ -107,7 +110,6 @@
             if (usedVerses.length === verses.length) {
                 document.getElementById("verseResult").innerHTML = `Μπράβο! Τελείωσες το παιχνίδι! Σκορ: ${score}`;
                 document.getElementById("resetBtn").style.display = "none";
-                document.getElementById("returnBtn").style.display = "inline-block";
                 return;
             }
 
@@ -198,13 +200,14 @@
                 }
             }
 
+            // Αν οι λέξεις τοποθετήθηκαν σωστά
             if (JSON.stringify(droppedWords) === JSON.stringify(correctOrder)) {
                 score++;
                 document.getElementById("verseResult").innerHTML = "Σωστά!";
                 document.getElementById("verseResult").classList.add("correct");
                 document.getElementById("score").innerText = score;
 
-                setTimeout(selectRandomVerse, 2000);
+                setTimeout(selectRandomVerse, 2000); // Προχωρά στην επόμενη πρόταση
             } else {
                 document.getElementById("verseResult").innerHTML = "Δοκιμάστε ξανά.";
                 document.getElementById("verseResult").classList.remove("correct");
