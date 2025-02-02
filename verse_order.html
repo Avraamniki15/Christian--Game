@@ -5,23 +5,158 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Τακτοποιήστε το εδάφιο</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        .verse-container { display: flex; justify-content: center; gap: 10px; }
-        .verse-word { padding: 10px; background: #ADD8E6; border-radius: 8px; cursor: grab; font-weight: bold; }
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f9f9f9; }
+        .verse-container { 
+            display: flex; 
+            justify-content: center; 
+            gap: 10px; 
+            margin-bottom: 20px;
+        }
+        .verse-word { 
+            padding: 10px; 
+            background: #ADD8E6; 
+            border-radius: 8px; 
+            cursor: grab; 
+            font-weight: bold; 
+            display: inline-block;
+        }
         .correct { color: green; font-weight: bold; }
+        .drop-container { 
+            display: flex; 
+            justify-content: center; 
+            gap: 10px; 
+            padding: 10px;
+            border: 2px solid #ddd; 
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .drop-area { 
+            width: 120px; height: 50px; 
+            background-color: #f0f0f0; 
+            border: 2px dashed #aaa; 
+            border-radius: 5px;
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+        }
     </style>
 </head>
 <body>
 
     <h1>Τακτοποιήστε το εδάφιο</h1>
-    <div class="verse-container">
-        <div class="verse-word" draggable="true">Εν</div>
-        <div class="verse-word" draggable="true">αρχή</div>
-        <div class="verse-word" draggable="true">ήν</div>
-        <div class="verse-word" draggable="true">ο</div>
-        <div class="verse-word" draggable="true">Λόγος</div>
+    <p>Συρθείτε και τακτοποιήστε τις λέξεις στην σωστή σειρά:</p>
+
+    <div class="verse-container" id="verse-container">
+        <!-- Οι λέξεις θα προστεθούν δυναμικά εδώ -->
     </div>
+
+    <div class="drop-container" id="drop-container">
+        <!-- Οι περιοχές για τοποθέτηση των λέξεων θα προστεθούν δυναμικά εδώ -->
+    </div>
+
     <p id="verseResult"></p>
+
+    <script>
+        // Λίστα εδαφίων με λέξεις
+        const verses = [
+            ["Εν", "αρχή", "ήν", "ο", "Λόγος"], // Παράδειγμα 1
+            ["Ο", "Θεός", "αγάπη", "είναι", "ο"], // Παράδειγμα 2
+            ["Ειρήνη", "ευλογία", "και", "χαρά", "είναι"], // Παράδειγμα 3
+        ];
+
+        // Κρατάμε το τρέχον εδάφιο
+        let currentVerse = [];
+
+        // Επιλογή τυχαίου εδαφίου
+        function selectRandomVerse() {
+            const randomIndex = Math.floor(Math.random() * verses.length);
+            currentVerse = verses[randomIndex];
+            displayVerse();
+        }
+
+        // Εμφάνιση λέξεων του εδαφίου
+        function displayVerse() {
+            // Εκκαθάριση των προηγούμενων λέξεων και περιοχών
+            document.getElementById('verse-container').innerHTML = '';
+            document.getElementById('drop-container').innerHTML = '';
+
+            // Δημιουργία λέξεων για drag-and-drop
+            currentVerse.forEach((word, index) => {
+                const wordElement = document.createElement('div');
+                wordElement.classList.add('verse-word');
+                wordElement.id = `word${index}`;
+                wordElement.draggable = true;
+                wordElement.innerText = word;
+                wordElement.addEventListener('dragstart', function (ev) { drag(ev); });
+
+                document.getElementById('verse-container').appendChild(wordElement);
+            });
+
+            // Δημιουργία περιοχών drop
+            currentVerse.forEach((_, index) => {
+                const dropArea = document.createElement('div');
+                dropArea.classList.add('drop-area');
+                dropArea.id = `drop${index}`;
+                dropArea.addEventListener('drop', function (ev) { drop(ev); });
+                dropArea.addEventListener('dragover', function (ev) { allowDrop(ev); });
+
+                document.getElementById('drop-container').appendChild(dropArea);
+            });
+        }
+
+        // Δυνατότητες Drag & Drop
+        function allowDrop(ev) {
+            ev.preventDefault(); // Επιτρέπει τη μεταφορά
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id); // Αποθηκεύει το ID του στοιχείου
+        }
+
+        function drop(ev) {
+            ev.preventDefault(); // Αποτρέπει την προεπιλεγμένη ενέργεια
+            var data = ev.dataTransfer.getData("text"); // Παίρνει το ID του στοιχείου που σύρθηκε
+            var draggedElement = document.getElementById(data); // Παίρνει το στοιχείο που σύρθηκε
+            var target = ev.target; // Παίρνει το στοιχείο στόχο
+
+            // Ελέγχει αν η περιοχή είναι κενή
+            if (!target.hasChildNodes()) {
+                target.appendChild(draggedElement); // Μεταφέρει το στοιχείο στην περιοχή στόχο
+            }
+
+            checkAnswer(); // Ελέγχει αν η απάντηση είναι σωστή
+        }
+
+        function checkAnswer() {
+            const correctOrder = currentVerse; // Η σωστή σειρά των λέξεων
+            const droppedWords = [];
+
+            // Συγκεντρώνει τις λέξεις που έχουν μεταφερθεί στις περιοχές
+            for (let i = 0; i < currentVerse.length; i++) {
+                let dropArea = document.getElementById("drop" + i);
+                if (dropArea.hasChildNodes()) {
+                    droppedWords.push(dropArea.firstChild.innerText);
+                } else {
+                    droppedWords.push(null);
+                }
+            }
+
+            // Ελέγχει αν η σειρά των λέξεων είναι σωστή
+            if (JSON.stringify(droppedWords) === JSON.stringify(correctOrder)) {
+                document.getElementById("verseResult").innerHTML = "Σωστά! Το εδάφιο είναι σωστά τακτοποιημένο.";
+                document.getElementById("verseResult").classList.add("correct");
+
+                // Αν έχετε άλλες λέξεις, μεταβείτε στο επόμενο
+                setTimeout(selectRandomVerse, 2000); // Επόμενο εδάφιο μετά από 2 δευτερόλεπτα
+            } else {
+                document.getElementById("verseResult").innerHTML = "Δοκιμάστε ξανά.";
+                document.getElementById("verseResult").classList.remove("correct");
+            }
+        }
+
+        // Ξεκινάει το παιχνίδι με ένα τυχαίο εδάφιο
+        selectRandomVerse();
+    </script>
 
 </body>
 </html>
