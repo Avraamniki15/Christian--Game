@@ -32,6 +32,8 @@
             font-weight: bold;
             display: inline-block;
             user-select: none;
+            width: 90px; /* Μειώσαμε το πλάτος των λέξεων */
+            text-align: center;
         }
 
         .verse-word:active {
@@ -44,17 +46,19 @@
         }
 
         .drop-container {
-            display: flex;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(3, 100px); /* 3 στήλες */
+            grid-template-rows: repeat(2, 50px);  /* 2 σειρές */
             gap: 10px;
             padding: 10px;
             border: 2px solid #ddd;
             border-radius: 8px;
             margin-bottom: 20px;
+            justify-items: center; /* Εξασφαλίζει ότι το περιεχόμενο ευθυγραμμίζεται στο κέντρο */
         }
 
         .drop-area {
-            width: 120px;
+            width: 100px;  /* Μικρότερο πλάτος για το drop area */
             height: 50px;
             background-color: #f0f0f0;
             border: 2px dashed #aaa;
