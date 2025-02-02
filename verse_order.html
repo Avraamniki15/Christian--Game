@@ -20,11 +20,10 @@
         }
 
         .verse-container {
-            display: grid;
-            grid-template-columns: repeat(4, 90px); /* Δημιουργεί 4 στήλες με πλάτος 90px για τις λέξεις */
+            display: flex;
+            justify-content: center;
             gap: 10px;
             margin-bottom: 20px;
-            justify-content: center;  /* Ευθυγράμμιση των λέξεων στο κέντρο */
         }
 
         .verse-word {
@@ -35,6 +34,7 @@
             font-weight: bold;
             display: inline-block;
             user-select: none;
+            width: 90px; /* Μειώσαμε το πλάτος των λέξεων */
             text-align: center;
         }
 
@@ -49,8 +49,8 @@
 
         .drop-container {
             display: grid;
-            grid-template-columns: repeat(4, 80px); /* 4 στήλες με μικρότερο πλάτος */
-            grid-template-rows: repeat(4, 50px);  /* 4 σειρές */
+            grid-template-columns: repeat(2, 1fr); /* 2 στήλες ανά σειρά */
+            grid-template-rows: repeat(3, 50px);  /* 3 σειρές για 6 λέξεις */
             gap: 10px;
             padding: 10px;
             border: 2px solid #ddd;
@@ -116,9 +116,9 @@
 
     <script>
         const verses = [
-            ["Εν", "αρχή", "ήν", "ο", "Λόγος"], 
-            ["Ο", "Θεός", "αγάπη", "είναι", "ο"], 
-            ["Ειρήνη", "ευλογία", "και", "χαρά", "είναι"]
+            ["Εν", "αρχή", "ήν", "ο", "Λόγος", "και"], 
+            ["Ο", "Θεός", "αγάπη", "είναι", "ο", "δρόμος"], 
+            ["Ειρήνη", "ευλογία", "και", "χαρά", "είναι", "ο"]
         ];
 
         let currentVerse = [];
