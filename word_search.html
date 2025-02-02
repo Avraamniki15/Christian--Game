@@ -31,6 +31,7 @@
         const gridSize = 6;
         const alphabet = 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ';
         let grid = [];
+        let usedWords = [];
         let currentWord = '';
         let timeLeft = 50;
         let score = 0;
@@ -39,7 +40,14 @@
         let timerInterval;
 
         function getRandomWord() {
-            return words[Math.floor(Math.random() * words.length)];
+            let availableWords = words.filter(w => !usedWords.includes(w));
+            if (availableWords.length === 0) {
+                usedWords = [];
+                availableWords = [...words];
+            }
+            let newWord = availableWords[Math.floor(Math.random() * availableWords.length)];
+            usedWords.push(newWord);
+            return newWord;
         }
 
         function createGrid() {
