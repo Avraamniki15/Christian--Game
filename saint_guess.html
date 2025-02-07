@@ -8,17 +8,22 @@
     body {
       font-family: Arial, sans-serif;
       text-align: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
       background-color: #f4f7f6;
-      padding: 20px;
     }
     #game-container {
       background: white;
-      padding: 15px;
+      padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
       width: 90%;
       max-width: 350px;
-      margin: 10px auto;
       text-align: center;
     }
     img {
@@ -28,12 +33,12 @@
       margin: 10px 0;
       object-fit: cover;
     }
-    button {
+    .option-btn, #next-btn, #back-btn {
       display: block;
       width: 100%;
       margin: 10px 0;
-      padding: 10px;
-      font-size: 14px;
+      padding: 12px;
+      font-size: 16px;
       border: none;
       border-radius: 5px;
       color: white;
@@ -50,14 +55,21 @@
       background-color: #ccc;
       cursor: not-allowed;
     }
-    .correct { color: green; }
-    .incorrect { color: red; }
+    .correct { color: green; font-weight: bold; }
+    .incorrect { color: red; font-weight: bold; }
     #next-btn {
       background-color: #007bff;
       display: none;
     }
     #next-btn:hover {
       background-color: #0056b3;
+    }
+    #back-btn {
+      background-color: #ff5722;
+      max-width: 250px;
+    }
+    #back-btn:hover {
+      background-color: #e64a19;
     }
   </style>
 </head>
@@ -72,11 +84,13 @@
     <button id="next-btn" onclick="loadSaint()">Επόμενη εικόνα</button>
   </div>
 
+  <button id="back-btn" onclick="goBack()">Επιστροφή στην Αρχική</button>
+
   <script>
     const saints = [
-      { name: "Άγιος Γεώργιος", image: "a1.jpg" },
-      { name: "Άγιος Νικόλαος", image: "a2.jpg" },
-      { name: "Άγιος Ιωάννης", image: "a3.jpg" }
+      { name: "Άγιος Γεώργιος", image: "a1.jpg", options: ["Άγιος Γεώργιος", "Άγιος Νικόλαος", "Άγιος Δημήτριος"], correctAnswer: "Άγιος Γεώργιος" },
+      { name: "Άγιος Νικόλαος", image: "a2.jpg", options: ["Άγιος Νικόλαος", "Άγιος Αντώνιος", "Άγιος Παύλος"], correctAnswer: "Άγιος Νικόλαος" },
+      { name: "Άγιος Ιωάννης", image: "a3.jpg", options: ["Άγιος Ιωάννης", "Άγιος Κωνσταντίνος", "Άγιος Δημήτριος"], correctAnswer: "Άγιος Ιωάννης" }
     ];
 
     function shuffleArray(array) {
@@ -89,27 +103,22 @@
     function loadSaint() {
       let randomSaint = saints[Math.floor(Math.random() * saints.length)];
 
+      // Εμφάνιση εικόνας Αγίου
       document.getElementById("saint-image").src = randomSaint.image;
       document.getElementById("question").innerText = "Ποιός είναι αυτός ο Άγιος;";
 
-      let options = [randomSaint.name];
-      while (options.length < 3) {
-        let randomOption = saints[Math.floor(Math.random() * saints.length)].name;
-        if (!options.includes(randomOption)) {
-          options.push(randomOption);
-        }
-      }
-
+      let options = [...randomSaint.options];
       shuffleArray(options);
 
       let buttonsContainer = document.getElementById("buttons-container");
       buttonsContainer.innerHTML = "";
 
+      // Δημιουργία κουμπιών επιλογής
       options.forEach(option => {
         let btn = document.createElement("button");
         btn.innerText = option;
         btn.classList.add("option-btn");
-        btn.onclick = function () { checkAnswer(option, randomSaint.name, btn); };
+        btn.onclick = function () { checkAnswer(option, randomSaint.correctAnswer, btn); };
         buttonsContainer.appendChild(btn);
       });
 
@@ -130,6 +139,10 @@
       buttons.forEach(btn => btn.disabled = true);
 
       document.getElementById("next-btn").style.display = "block";
+    }
+
+    function goBack() {
+      window.location.href = "index.html";
     }
 
     loadSaint();
