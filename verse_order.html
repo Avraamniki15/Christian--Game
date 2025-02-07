@@ -10,8 +10,8 @@
             text-align: center;
             background: linear-gradient(to right, #87CEFA, #FFD700);
             padding: 20px;
-            width: 65%;  /* Ρύθμισα το πλάτος του body στο 65% */
-            margin: 0 auto;  /* Ευθυγράμμιση στο κέντρο */
+            width: 65%;
+            margin: 0 auto;
         }
 
         h1 {
@@ -24,9 +24,8 @@
             justify-content: center;
             gap: 10px;
             margin-bottom: 20px;
-            flex-wrap: wrap;  /* Διασφαλίζει ότι οι λέξεις θα αναδιπλώνονται όταν το πλάτος μικραίνει */
-            justify-items: center; /* Ευθυγραμμίζει τα στοιχεία στο κέντρο */
-            width: 100%;  /* Καταλαμβάνει το 100% του container */
+            flex-wrap: wrap;
+            width: 100%;
         }
 
         .verse-word {
@@ -37,7 +36,7 @@
             font-weight: bold;
             display: inline-block;
             user-select: none;
-            width: 90px; /* Μειώσαμε το πλάτος των λέξεων */
+            width: 90px;
             text-align: center;
         }
 
@@ -45,26 +44,19 @@
             cursor: grabbing;
         }
 
-        .correct {
-            color: green;
-            font-weight: bold;
-        }
-
         .drop-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2 στήλες ανά σειρά */
-            grid-template-rows: repeat(3, 50px);  /* 3 σειρές για 6 λέξεις */
+            display: flex;
+            justify-content: center;
             gap: 10px;
             padding: 10px;
             border: 2px solid #ddd;
             border-radius: 8px;
             margin-bottom: 20px;
-            justify-items: center; /* Εξασφαλίζει ότι το περιεχόμενο ευθυγραμμίζεται στο κέντρο */
-            width: 100%; /* Κάνει το drop-container να καταλαμβάνει όλο το διαθέσιμο πλάτος */
+            flex-wrap: wrap;
         }
 
         .drop-area {
-            width: 80px;  /* Μειώσαμε το πλάτος για το drop area */
+            width: 80px;
             height: 50px;
             background-color: #f0f0f0;
             border: 2px dashed #aaa;
@@ -72,6 +64,16 @@
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        #versePoetry {
+            font-size: 18px;
+            font-style: italic;
+            color: #333;
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 5px;
         }
 
         #resetBtn, #returnBtn {
@@ -106,6 +108,7 @@
 <body>
 
     <h1>Τακτοποιήστε το Εδάφιο</h1>
+    <p id="versePoetry"></p> <!-- Εδώ θα εμφανίζεται η ποίηση του εδαφίου -->
     <p>Σύρετε και τακτοποιήστε τις λέξεις στη σωστή σειρά:</p>
 
     <div class="verse-container" id="verse-container"></div>
@@ -114,14 +117,14 @@
     <p id="verseResult"></p>
     <p>Σκορ: <span id="score">0</span></p>
 
-    <button id="returnBtn" onclick="goBack()">Επιστροφή στην Αρχική Οθόνη</button>
+    <button id="returnBtn" onclick="goBack()">Επιστροφή στην αρχική λίστα παιχνιδιών</button>
     <button id="resetBtn" onclick="resetGame()">Προσπάθησε Ξανά</button>
 
     <script>
         const verses = [
-            ["Εν", "αρχή", "ήν", "ο", "Λόγος", "και"], 
-            ["Ο", "Θεός", "αγάπη", "είναι", "ο", "δρόμος"], 
-            ["Η", "χάρη", "του", "Κυρίου", "είθε", "να", "να", "είναι", "μαζί", "σας"]
+            { poetry: "Προς Φιλιππησίους 4:13", words: ["Όλα", "τα", "μπορώ", "διαμέσου", "τού", "Χριστού", "που", "με", "ενδυναμώνει"] },
+            { poetry: "Κατά Λουκάν 1:37", words: ["Επειδή", "κανένα", "πράγμα", "δεν", "θα", "είναι", "αδύνατο", "στον", "Θεό"] },
+            { poetry: "Προς Γαλατάς 6:18", words: ["Η", "χάρη", "του", "Κυρίου", "να", "είναι", "μαζί", "σας"] }
         ];
 
         let currentVerse = [];
@@ -142,7 +145,7 @@
             } while (usedVerses.includes(randomIndex));
 
             currentIndex = randomIndex;
-            currentVerse = [...verses[randomIndex]];
+            currentVerse = [...verses[randomIndex].words];
             usedVerses.push(randomIndex);
             displayVerse();
         }
@@ -152,6 +155,7 @@
 
             document.getElementById('verse-container').innerHTML = '';
             document.getElementById('drop-container').innerHTML = '';
+            document.getElementById('versePoetry').innerText = verses[currentIndex].poetry; // Προσθήκη της ποίησης
 
             currentVerse.forEach((word, index) => {
                 const wordElement = document.createElement('div');
@@ -206,7 +210,7 @@
         }
 
         function checkAnswer() {
-            const correctOrder = verses[currentIndex];
+            const correctOrder = verses[currentIndex].words;
             let droppedWords = [];
 
             for (let i = 0; i < correctOrder.length; i++) {
@@ -223,7 +227,6 @@
                 score++;
                 document.getElementById("verseResult").innerHTML = "Σωστά!";
                 document.getElementById("score").innerText = score;
-
                 setTimeout(() => {
                     clearGameBoard();
                     selectRandomVerse();
@@ -232,16 +235,6 @@
                 document.getElementById("verseResult").innerHTML = "Λάθος! Δοκιμάστε ξανά.";
                 document.getElementById("resetBtn").style.display = "inline-block";
             }
-        }
-
-        function resetGame() {
-            displayVerse();
-        }
-
-        function clearGameBoard() {
-            document.getElementById("verse-container").innerHTML = "";
-            document.getElementById("drop-container").innerHTML = "";
-            document.getElementById("verseResult").innerHTML = "";
         }
 
         function goBack() {
