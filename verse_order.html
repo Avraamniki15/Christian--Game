@@ -20,14 +20,12 @@
         }
 
         .verse-container {
-            display: grid;
-            grid-template-columns: repeat(2, auto); /* Δύο στήλες */
-            gap: 10px;
+            display: flex;
             justify-content: center;
+            gap: 10px;
             margin-bottom: 20px;
-            width: fit-content;
-            margin-left: auto;
-            margin-right: auto;
+            flex-wrap: wrap;
+            width: 100%;
         }
 
         .verse-word {
@@ -101,16 +99,12 @@
         #returnBtn:hover {
             background-color: #FF4500;
         }
-
-        #resetBtn {
-            display: none;
-        }
     </style>
 </head>
 <body>
 
     <h1>Τακτοποιήστε το Εδάφιο</h1>
-    <p id="versePoetry"></p> <!-- Εδώ θα εμφανίζεται η ποίηση του εδαφίου -->
+    <p id="versePoetry"></p>
     <p>Σύρετε και τακτοποιήστε τις λέξεις στη σωστή σειρά:</p>
 
     <div class="verse-container" id="verse-container"></div>
@@ -136,8 +130,10 @@
 
         function selectRandomVerse() {
             if (usedVerses.length === verses.length) {
-                document.getElementById("verseResult").innerHTML = `Μπράβο! Τελείωσες το παιχνίδι! Σκορ: ${score}`;
-                document.getElementById("resetBtn").style.display = "none";
+                document.getElementById("verseResult").innerHTML = `Μπράβο! Τελείωσες το παιχνίδι! Τελικό σκορ: ${score}`;
+                document.getElementById("versePoetry").innerText = "";
+                document.getElementById("verse-container").innerHTML = "";
+                document.getElementById("drop-container").innerHTML = "";
                 return;
             }
 
@@ -157,7 +153,7 @@
 
             document.getElementById('verse-container').innerHTML = '';
             document.getElementById('drop-container').innerHTML = '';
-            document.getElementById('versePoetry').innerText = verses[currentIndex].poetry; // Προσθήκη της ποίησης
+            document.getElementById('versePoetry').innerText = verses[currentIndex].poetry;
 
             currentVerse.forEach((word, index) => {
                 const wordElement = document.createElement('div');
@@ -177,8 +173,6 @@
                 dropArea.addEventListener('dragover', allowDrop);
                 document.getElementById('drop-container').appendChild(dropArea);
             });
-
-            document.getElementById("resetBtn").style.display = "none";
         }
 
         function shuffleArray(array) {
@@ -220,23 +214,23 @@
                 droppedWords.push(dropArea.hasChildNodes() ? dropArea.firstChild.innerText.trim() : null);
             }
 
-            if (droppedWords.includes(null)) {
-                document.getElementById("verseResult").innerHTML = "Τοποθετήστε όλες τις λέξεις.";
-                return;
-            }
+            if (droppedWords.includes(null)) return;
 
             if (JSON.stringify(droppedWords) === JSON.stringify(correctOrder)) {
                 score++;
                 document.getElementById("verseResult").innerHTML = "Σωστά!";
                 document.getElementById("score").innerText = score;
-                setTimeout(() => {
-                    clearGameBoard();
-                    selectRandomVerse();
-                }, 2000);
+                setTimeout(selectRandomVerse, 2000);
             } else {
                 document.getElementById("verseResult").innerHTML = "Λάθος! Δοκιμάστε ξανά.";
-                document.getElementById("resetBtn").style.display = "inline-block";
             }
+        }
+
+        function resetGame() {
+            usedVerses = [];
+            score = 0;
+            document.getElementById("score").innerText = score;
+            selectRandomVerse();
         }
 
         function goBack() {
