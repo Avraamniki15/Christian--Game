@@ -16,15 +16,17 @@
       justify-content: center;
       height: 100vh;
       background-color: #f4f7f6;
+      width: 100%;
     }
     #game-container {
       background: white;
-      padding: 20px;
+      padding: 10px;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-      width: 90%;
-      max-width: 350px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      width: 60%;
+      max-width: 250px;
       text-align: center;
+      margin: 10px;
     }
     img {
       width: 150px;
@@ -33,43 +35,67 @@
       margin: 10px 0;
       object-fit: cover;
     }
-    .option-btn, #next-btn, #back-btn {
+    #buttons-container button {
       display: block;
       width: 100%;
       margin: 10px 0;
-      padding: 12px;
+      padding: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #4CAF50;
+      color: white;
+      transition: background-color 0.3s;
+    }
+    #buttons-container button:hover {
+      background-color: #45a049;
+    }
+    #buttons-container button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    .correct {
+      color: green;
+    }
+    .incorrect {
+      color: red;
+    }
+    #score {
       font-size: 16px;
+      font-weight: bold;
+    }
+    #restart-btn {
+      margin-top: 15px;
+      display: none;
+      background-color: #ff5722;
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
       border: none;
       border-radius: 5px;
       color: white;
       cursor: pointer;
       transition: background-color 0.3s;
     }
-    .option-btn {
-      background-color: #4CAF50;
-    }
-    .option-btn:hover {
-      background-color: #45a049;
-    }
-    .option-btn:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
-    }
-    .correct { color: green; font-weight: bold; }
-    .incorrect { color: red; font-weight: bold; }
-    #next-btn {
-      background-color: #007bff;
-      display: none;
-    }
-    #next-btn:hover {
-      background-color: #0056b3;
+    #restart-btn:hover {
+      background-color: #e64a19;
     }
     #back-btn {
-      background-color: #ff5722;
+      margin-top: 15px;
+      background-color: #007bff;
+      width: 100%;
       max-width: 250px;
+      padding: 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
     }
     #back-btn:hover {
-      background-color: #e64a19;
+      background-color: #0056b3;
     }
   </style>
 </head>
@@ -81,17 +107,21 @@
     <h3 id="question">Ποιός είναι αυτός ο Άγιος;</h3>
     <div id="buttons-container"></div>
     <p id="result"></p>
-    <button id="next-btn" onclick="loadSaint()">Επόμενη εικόνα</button>
+    <p id="score">Σκορ: 0</p>
+    <button id="restart-btn" onclick="restartGame()">Ξαναπαίξε</button>
   </div>
 
   <button id="back-btn" onclick="goBack()">Επιστροφή στην Αρχική</button>
 
   <script>
-    const saints = [
+    let saints = [
       { name: "Άγιος Γεώργιος", image: "a1.jpg", options: ["Άγιος Γεώργιος", "Άγιος Νικόλαος", "Άγιος Δημήτριος"], correctAnswer: "Άγιος Γεώργιος" },
       { name: "Άγιος Νικόλαος", image: "a2.jpg", options: ["Άγιος Νικόλαος", "Άγιος Αντώνιος", "Άγιος Παύλος"], correctAnswer: "Άγιος Νικόλαος" },
       { name: "Άγιος Ιωάννης", image: "a3.jpg", options: ["Άγιος Ιωάννης", "Άγιος Κωνσταντίνος", "Άγιος Δημήτριος"], correctAnswer: "Άγιος Ιωάννης" }
     ];
+
+    let remainingSaints = [...saints];
+    let score = 0;
 
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -101,9 +131,19 @@
     }
 
     function loadSaint() {
-      let randomSaint = saints[Math.floor(Math.random() * saints.length)];
+      if (remainingSaints.length === 0) {
+        document.getElementById("question").innerText = `Τέλος του παιχνιδιού! Το τελικό σου σκορ είναι: ${score}`;
+        document.getElementById("buttons-container").innerHTML = "";
+        document.getElementById("restart-btn").style.display = "block";
+        return;
+      }
 
-      // Εμφάνιση εικόνας Αγίου
+      let randomIndex = Math.floor(Math.random() * remainingSaints.length);
+      let randomSaint = remainingSaints[randomIndex];
+
+      // Αφαιρούμε τον επιλεγμένο Άγιο για να μην ξαναεμφανιστεί
+      remainingSaints.splice(randomIndex, 1);
+
       document.getElementById("saint-image").src = randomSaint.image;
       document.getElementById("question").innerText = "Ποιός είναι αυτός ο Άγιος;";
 
@@ -113,32 +153,41 @@
       let buttonsContainer = document.getElementById("buttons-container");
       buttonsContainer.innerHTML = "";
 
-      // Δημιουργία κουμπιών επιλογής
       options.forEach(option => {
         let btn = document.createElement("button");
         btn.innerText = option;
-        btn.classList.add("option-btn");
         btn.onclick = function () { checkAnswer(option, randomSaint.correctAnswer, btn); };
         buttonsContainer.appendChild(btn);
       });
 
       document.getElementById("result").innerText = "";
-      document.getElementById("next-btn").style.display = "none";
     }
 
     function checkAnswer(selected, correct, button) {
       if (selected === correct) {
         document.getElementById("result").innerHTML = "<span class='correct'>Σωστό!</span>";
         button.style.backgroundColor = "green";
+        score++;
       } else {
-        document.getElementById("result").innerHTML = "<span class='incorrect'>Λάθος! Ο σωστός είναι: " + correct + ".</span>";
+        document.getElementById("result").innerHTML = "<span class='incorrect'>Λάθος! Η σωστή απάντηση είναι: " + correct + ".</span>";
         button.style.backgroundColor = "red";
+        score--;
       }
+
+      document.getElementById("score").innerText = `Σκορ: ${score}`;
 
       let buttons = document.querySelectorAll("#buttons-container button");
       buttons.forEach(btn => btn.disabled = true);
 
-      document.getElementById("next-btn").style.display = "block";
+      setTimeout(loadSaint, 2000);
+    }
+
+    function restartGame() {
+      remainingSaints = [...saints];
+      score = 0;
+      document.getElementById("score").innerText = "Σκορ: 0";
+      document.getElementById("restart-btn").style.display = "none";
+      loadSaint();
     }
 
     function goBack() {
