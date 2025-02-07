@@ -10,9 +10,8 @@
             text-align: center;
             background: linear-gradient(to right, #87CEFA, #FFD700);
             padding: 20px;
-            max-width: 100%;
-            width: auto;
-            margin: 0 auto;
+            margin: 0;
+            overflow-x: hidden;
         }
 
         h1 {
@@ -20,15 +19,12 @@
             text-shadow: 2px 2px 4px #000;
         }
 
-        .verse-container {
-            display: grid;
-            grid-template-columns: repeat(2, auto); /* Δύο στήλες */
+        .verse-container, .drop-container {
+            display: flex;
+            flex-wrap: wrap;
             gap: 10px;
             justify-content: center;
             margin-bottom: 20px;
-            width: fit-content;
-            margin-left: auto;
-            margin-right: auto;
         }
 
         .verse-word {
@@ -37,30 +33,14 @@
             border-radius: 8px;
             cursor: grab;
             font-weight: bold;
-            display: inline-block;
             user-select: none;
-            width: 90px;
+            min-width: 90px;
             text-align: center;
-        }
-
-        .verse-word:active {
-            cursor: grabbing;
-        }
-
-        .drop-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Δύο στήλες */
-            gap: 10px;
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            width: fit-content;
-            margin-left: auto;
-            margin-right: auto;
+            touch-action: none;
         }
 
         .drop-area {
-            width: 80px;
+            width: 90px;
             height: 50px;
             background-color: #f0f0f0;
             border: 2px dashed #aaa;
@@ -80,7 +60,7 @@
             border-radius: 5px;
         }
 
-        #resetBtn, #returnBtn {
+        button {
             padding: 10px 20px;
             margin-top: 20px;
             cursor: pointer;
@@ -88,20 +68,10 @@
             color: white;
             border: none;
             border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        #resetBtn:hover, #returnBtn:hover {
+        button:hover {
             background-color: #45a049;
-        }
-
-        #returnBtn {
-            background-color: #FF6347;
-            margin-top: 30px;
-        }
-
-        #returnBtn:hover {
-            background-color: #FF4500;
         }
     </style>
 </head>
@@ -109,7 +79,7 @@
 
     <h1>Τακτοποιήστε το Εδάφιο</h1>
     <p id="versePoetry"></p>
-    <p>Πατήστε για 2 δευτερόλεπτα για να σύρετε και νατακτοποιήστε τις λέξεις στη σωστή σειρά:</p>
+    <p>Σύρετε ή αγγίξτε τις λέξεις για να τις τοποθετήσετε στη σωστή σειρά:</p>
 
     <div class="verse-container" id="verse-container"></div>
     <div class="drop-container" id="drop-container"></div>
@@ -117,8 +87,7 @@
     <p id="verseResult"></p>
     <p>Σκορ: <span id="score">0</span></p>
 
-    <button id="returnBtn" onclick="goBack()">Επιστροφή στην αρχική λίστα παιχνιδιών</button>
-    <button id="resetBtn" onclick="resetGame()">Προσπάθησε Ξανά</button>
+    <button onclick="resetGame()">Προσπάθησε Ξανά</button>
 
     <script>
         const verses = [
@@ -127,62 +96,48 @@
             { poetry: "Προς Γαλατάς 6:18", words: ["Η", "χάρη", "του", "Κυρίου", "να", "είναι", "μαζί", "σας"] },
             { poetry: "Ψαλμοί 29:11", words: ["Ο Kύριoς", "θα", "δώσει", "δύναμη", "στoν", "λαό", "τoυ", "ο Kύριoς", "θα", "ευλoγήσει", "τoν λαό", "τoυ", "με ειρήνη"] },
             { poetry: "Πέτρου Β΄ 1:3", words: ["Kαθώς", "η θεία δύναμή", "του", "χάρισε", "σε μας", "όλα", "τα απαραίτητα", "προς ζωή", "και ευσέβεια"] },
-            { poetry: "Προς Εβραίους 2:18", words: ["Επειδή", "σε ό,τι", "αυτός έπαθε", "όταν", "πειράστηκε", "μπορεί να", "βοηθήσει", "αυτούς που", "πειράζονται"] },
-            { poetry: "Κατά Ματθαίον 9:6", words: ["Για να", "γνωρίσετε", "ότι", "ο Yιός", "τού ανθρώπου", "έχει", "εξουσία", "επάνω", "στη γη", "να συγχωρεί", "αμαρτίες"] },
-            { poetry: "Κατά Ματθαίον 28:18", words: ["Kαι", "καθώς", "ο Iησούς", "τούς πλησίασε,", "τους μίλησε", "λέγοντας:", "Δόθηκε", "σε μένα", "κάθε εξουσία", "στον ουρανό", "και", "επάνω", "στη γη"] },
-            { poetry: "Ψαλμοί 34:19", words: ["Πoλλές", "oι θλίψεις", "τού", "δικαίου,", "αλλά", "απ’ όλες", "αυτές", "o Kύριoς", "θα τoν", "ελευθερώσει"] },
-            { poetry: "Ιακώβου 4:10", words: ["Ταπεινωθείτε", "μπροστά", "στον", "Κύριο", "και", "θα", "σας", "υψώσει"] }
+            { poetry: "Προς Εβραίους 2:18", words: ["Επειδή", "σε ό,τι", "αυτός έπαθε", "όταν", "πειράστηκε", "μπορεί να", "βοηθήσει", "αυτούς που", "πειράζονται"] }
         ];
 
         let currentVerse = [];
-        let currentIndex = -1;
         let score = 0;
-        let usedVerses = [];
 
         function selectRandomVerse() {
-            if (usedVerses.length === verses.length) {
-                document.getElementById("verseResult").innerHTML = `Μπράβο! Τελείωσες το παιχνίδι! Τελικό σκορ: ${score}`;
-                document.getElementById("versePoetry").innerText = "";
-                document.getElementById("verse-container").innerHTML = "";
-                document.getElementById("drop-container").innerHTML = "";
-                return;
-            }
-
-            let randomIndex;
-            do {
-                randomIndex = Math.floor(Math.random() * verses.length);
-            } while (usedVerses.includes(randomIndex));
-
-            currentIndex = randomIndex;
+            const randomIndex = Math.floor(Math.random() * verses.length);
             currentVerse = [...verses[randomIndex].words];
-            usedVerses.push(randomIndex);
+            document.getElementById('versePoetry').innerText = verses[randomIndex].poetry;
             displayVerse();
         }
 
         function displayVerse() {
             shuffleArray(currentVerse);
 
-            document.getElementById('verse-container').innerHTML = '';
-            document.getElementById('drop-container').innerHTML = '';
-            document.getElementById('versePoetry').innerText = verses[currentIndex].poetry;
+            const verseContainer = document.getElementById('verse-container');
+            const dropContainer = document.getElementById('drop-container');
+
+            verseContainer.innerHTML = '';
+            dropContainer.innerHTML = '';
 
             currentVerse.forEach((word, index) => {
                 const wordElement = document.createElement('div');
                 wordElement.classList.add('verse-word');
-                wordElement.id = `word${index}`;
-                wordElement.draggable = true;
                 wordElement.innerText = word;
+                wordElement.setAttribute("draggable", "true");
+
                 wordElement.addEventListener('dragstart', drag);
-                document.getElementById('verse-container').appendChild(wordElement);
+                wordElement.addEventListener('touchstart', touchStart);
+                wordElement.addEventListener('touchmove', touchMove);
+                wordElement.addEventListener('touchend', touchEnd);
+
+                verseContainer.appendChild(wordElement);
             });
 
             currentVerse.forEach((_, index) => {
                 const dropArea = document.createElement('div');
                 dropArea.classList.add('drop-area');
-                dropArea.id = `drop${index}`;
                 dropArea.addEventListener('drop', drop);
                 dropArea.addEventListener('dragover', allowDrop);
-                document.getElementById('drop-container').appendChild(dropArea);
+                dropContainer.appendChild(dropArea);
             });
         }
 
@@ -198,54 +153,31 @@
         }
 
         function drag(ev) {
-            ev.dataTransfer.setData("text", ev.target.id);
-            setTimeout(() => ev.target.style.opacity = "0.5", 0);
+            ev.dataTransfer.setData("text", ev.target.innerText);
         }
 
         function drop(ev) {
             ev.preventDefault();
-            var data = ev.dataTransfer.getData("text");
-            var draggedElement = document.getElementById(data);
-            var target = ev.target;
-
-            if (!target.hasChildNodes()) {
-                target.appendChild(draggedElement);
-                draggedElement.style.opacity = "1";
-            }
-
+            const data = ev.dataTransfer.getData("text");
+            ev.target.innerText = data;
             checkAnswer();
         }
 
         function checkAnswer() {
-            const correctOrder = verses[currentIndex].words;
-            let droppedWords = [];
+            const correctOrder = verses.find(v => v.poetry === document.getElementById('versePoetry').innerText).words;
+            let userOrder = Array.from(document.querySelectorAll('.drop-area')).map(area => area.innerText);
 
-            for (let i = 0; i < correctOrder.length; i++) {
-                let dropArea = document.getElementById("drop" + i);
-                droppedWords.push(dropArea.hasChildNodes() ? dropArea.firstChild.innerText.trim() : null);
-            }
-
-            if (droppedWords.includes(null)) return;
-
-            if (JSON.stringify(droppedWords) === JSON.stringify(correctOrder)) {
+            if (JSON.stringify(userOrder) === JSON.stringify(correctOrder)) {
                 score++;
-                document.getElementById("verseResult").innerHTML = "Σωστά!";
                 document.getElementById("score").innerText = score;
                 setTimeout(selectRandomVerse, 2000);
-            } else {
-                document.getElementById("verseResult").innerHTML = "Λάθος! Δοκιμάστε ξανά.";
             }
         }
 
         function resetGame() {
-            usedVerses = [];
             score = 0;
             document.getElementById("score").innerText = score;
             selectRandomVerse();
-        }
-
-        function goBack() {
-            window.location.href = "index.html";
         }
 
         selectRandomVerse();
