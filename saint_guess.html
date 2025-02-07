@@ -1,33 +1,139 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Μαντέψτε τον Άγιο</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        .game-box { background: white; padding: 20px; margin: 20px auto; border-radius: 10px; width: 60%; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
-        img { width: 120px; height: 120px; border-radius: 10px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Μαντέψτε τον Άγιο</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f7f6;
+      padding: 20px;
+    }
+    #game-container {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 350px;
+      margin: 10px auto;
+      text-align: center;
+    }
+    img {
+      width: 150px;
+      height: 150px;
+      border-radius: 10px;
+      margin: 10px 0;
+      object-fit: cover;
+    }
+    button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .option-btn {
+      background-color: #4CAF50;
+    }
+    .option-btn:hover {
+      background-color: #45a049;
+    }
+    .option-btn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    .correct { color: green; }
+    .incorrect { color: red; }
+    #next-btn {
+      background-color: #007bff;
+      display: none;
+    }
+    #next-btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
 
-    <h1>Μαντέψτε τον Άγιο</h1>
-    <div class="game-box">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Saint_George_and_the_dragon.jpg/800px-Saint_George_and_the_dragon.jpg" alt="Saint">
-        <br>
-        <button onclick="guessSaint('Άγιος Γεώργιος')">Άγιος Γεώργιος</button>
-        <button onclick="guessSaint('Άγιος Νικόλαος')">Άγιος Νικόλαος</button>
-        <button onclick="guessSaint('Άγιος Ιωάννης')">Άγιος Ιωάννης</button>
-        <p id="saintResult"></p>
-    </div>
+  <div id="game-container">
+    <h2>Μαντέψτε τον Άγιο</h2>
+    <img id="saint-image" src="" alt="Άγιος">
+    <h3 id="question">Ποιός είναι αυτός ο Άγιος;</h3>
+    <div id="buttons-container"></div>
+    <p id="result"></p>
+    <button id="next-btn" onclick="loadSaint()">Επόμενη εικόνα</button>
+  </div>
 
-    <script>
-        function guessSaint(answer) {
-            let correctAnswer = "Άγιος Γεώργιος";
-            document.getElementById("saintResult").innerHTML = answer === correctAnswer ? "<span class='correct'>Σωστό!</span>" : "<span class='incorrect'>Λάθος! Δοκιμάστε ξανά.</span>";
+  <script>
+    const saints = [
+      { name: "Άγιος Γεώργιος", image: "a1.jpg" },
+      { name: "Άγιος Νικόλαος", image: "a2.jpg" },
+      { name: "Άγιος Ιωάννης", image: "a3.jpg" }
+    ];
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function loadSaint() {
+      let randomSaint = saints[Math.floor(Math.random() * saints.length)];
+
+      document.getElementById("saint-image").src = randomSaint.image;
+      document.getElementById("question").innerText = "Ποιός είναι αυτός ο Άγιος;";
+
+      let options = [randomSaint.name];
+      while (options.length < 3) {
+        let randomOption = saints[Math.floor(Math.random() * saints.length)].name;
+        if (!options.includes(randomOption)) {
+          options.push(randomOption);
         }
-    </script>
+      }
+
+      shuffleArray(options);
+
+      let buttonsContainer = document.getElementById("buttons-container");
+      buttonsContainer.innerHTML = "";
+
+      options.forEach(option => {
+        let btn = document.createElement("button");
+        btn.innerText = option;
+        btn.classList.add("option-btn");
+        btn.onclick = function () { checkAnswer(option, randomSaint.name, btn); };
+        buttonsContainer.appendChild(btn);
+      });
+
+      document.getElementById("result").innerText = "";
+      document.getElementById("next-btn").style.display = "none";
+    }
+
+    function checkAnswer(selected, correct, button) {
+      if (selected === correct) {
+        document.getElementById("result").innerHTML = "<span class='correct'>Σωστό!</span>";
+        button.style.backgroundColor = "green";
+      } else {
+        document.getElementById("result").innerHTML = "<span class='incorrect'>Λάθος! Ο σωστός είναι: " + correct + ".</span>";
+        button.style.backgroundColor = "red";
+      }
+
+      let buttons = document.querySelectorAll("#buttons-container button");
+      buttons.forEach(btn => btn.disabled = true);
+
+      document.getElementById("next-btn").style.display = "block";
+    }
+
+    loadSaint();
+  </script>
 
 </body>
 </html>
